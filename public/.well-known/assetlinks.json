@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.study2gate.twa",
+    "sha256_cert_fingerprints": ["F7:26:DE:58:7D:89:0D:CA:F5:38:4E:A8:E5:FE:97:2F:3F:57:85:0C:49:94:2A:41:6C:77:9E:CB:7A:22:95:C3"]
+  }
+}]
