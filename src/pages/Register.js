@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/api";
 import study2gateLogo from "../assets/study2gate-logo.png";
-import { Eye, EyeOff, Check, X } from "lucide-react";
+import { Eye, EyeOff, Check, X, Download } from "lucide-react";
 import PasswordRequirementsChecklist from "../components/PasswordRequirementsChecklist";
 import EqualizerLoader from "../components/EqualizerLoader";
 import BackendStatusBanner from "../components/BackendStatusBanner";
@@ -18,6 +18,7 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
   const [usernameStatus, setUsernameStatus] = useState("");
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const [error, setError] = useState("");
@@ -219,6 +220,7 @@ export default function Register() {
                     minLength={12}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onFocus={() => setPasswordFocused(true)}
                     placeholder="Create a password"
                     autoComplete="new-password"
                     className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-12 text-sm outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
@@ -232,7 +234,9 @@ export default function Register() {
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
-                <PasswordRequirementsChecklist password={password} />
+                {passwordFocused && (
+                  <PasswordRequirementsChecklist password={password} />
+                )}
               </div>
 
               <div>
@@ -304,6 +308,15 @@ export default function Register() {
                 Log in
               </Link>
             </p>
+
+            <a
+              href="/study2gate.apk"
+              download
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-100"
+            >
+              <Download className="h-4 w-4" strokeWidth={2.2} aria-hidden="true" />
+              Download App
+            </a>
 
             <div className="mt-7 border-t border-slate-100 pt-5 text-center">
               <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#635bff]">

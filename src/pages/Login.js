@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/api";
 import logo from "../assets/study2gate-logo.png";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Download } from "lucide-react";
 import { safeInternalPath } from "../utils/safeRedirect";
 import { friendlyErrorMessage } from "../utils/errorMessage";
 import EqualizerLoader from "../components/EqualizerLoader";
@@ -186,6 +186,15 @@ export default function Login() {
                   Create an account
                 </Link>
               </p>
+
+              <a
+                href="/study2gate.apk"
+                download
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-100"
+              >
+                <Download className="h-4 w-4" strokeWidth={2.2} aria-hidden="true" />
+                Download App
+              </a>
 
               <p className="mt-3 text-center text-xs text-slate-400">
                 <Link to="/terms" className="hover:underline">

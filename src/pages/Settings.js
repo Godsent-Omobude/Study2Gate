@@ -33,6 +33,7 @@ export default function Settings() {
   const [deletePassword, setDeletePassword] = useState("");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [newPasswordFocused, setNewPasswordFocused] = useState(false);
   const [showDeletePassword, setShowDeletePassword] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [message, setMessage] = useState("");
@@ -336,11 +337,13 @@ export default function Settings() {
               </button>
             </div>
             <div className="relative">
-              <input type={showNewPassword ? "text" : "password"} required minLength={12} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New password" className="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 text-sm outline-none focus:border-[var(--accent)]" />
+              <input type={showNewPassword ? "text" : "password"} required minLength={12} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} onFocus={() => setNewPasswordFocused(true)} placeholder="New password" className="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 text-sm outline-none focus:border-[var(--accent)]" />
               <button type="button" onClick={() => setShowNewPassword((value) => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700" aria-label={showNewPassword ? "Hide password" : "Show password"}>
                 {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
-              <PasswordRequirementsChecklist password={newPassword} />
+              {newPasswordFocused && (
+                <PasswordRequirementsChecklist password={newPassword} />
+              )}
             </div>
             <button disabled={saving || !isPasswordValid(newPassword)} className="w-fit rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-60">
               Change password
