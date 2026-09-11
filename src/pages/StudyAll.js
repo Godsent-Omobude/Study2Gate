@@ -68,6 +68,11 @@ export default function StudyAll() {
   const currentCard = cards[index];
   const progress = cards.length ? ((index + 1) / cards.length) * 100 : 0;
 
+  // How many cards to show before an "Again" card comes back up, so it
+  // isn't just repeated immediately but still resurfaces this session
+  // (the backend also reschedules it for 1 minute out, for next time).
+  const AGAIN_REQUEUE_GAP = 3;
+
   const rate = async (rating) => {
     if (!currentCard || submitting) return;
 
@@ -79,6 +84,20 @@ export default function StudyAll() {
       );
 
       setReviewed((count) => count + 1);
+
+      if (rating === "again") {
+        // Reinsert this card a few positions ahead instead of dropping it
+        // from the session, so the user sees it again before finishing.
+        setCards((prev) => {
+          const next = [...prev];
+          const insertAt = Math.min(index + 1 + AGAIN_REQUEUE_GAP, next.length);
+          next.splice(insertAt, 0, currentCard);
+          return next;
+        });
+        setIndex((i) => i + 1);
+        setRevealed(false);
+        return;
+      }
 
       if (index + 1 >= cards.length) {
         setFinished(true);
