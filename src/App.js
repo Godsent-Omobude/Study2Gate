@@ -17,7 +17,14 @@ import AdminRoute from "./components/AdminRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
-import Settings from "./pages/Settings";
+import SettingsLayout from "./pages/settings/SettingsLayout";
+import SettingsHome from "./pages/settings/SettingsHome";
+import SettingsAccount from "./pages/settings/SettingsAccount";
+import SettingsPassword from "./pages/settings/SettingsPassword";
+import SettingsPrivacy from "./pages/settings/SettingsPrivacy";
+import SettingsAppearance from "./pages/settings/SettingsAppearance";
+import SettingsNotifications from "./pages/settings/SettingsNotifications";
+import SettingsDanger from "./pages/settings/SettingsDanger";
 import NotificationBell from "./components/NotificationBell";
 import DownloadCreditsBadge from "./components/DownloadCreditsBadge";
 import JoinCircleInvitation from "./pages/JoinCircleInvitation";
@@ -215,10 +222,18 @@ export default function App() {
           path="/settings"
           element={
             <ProtectedLayout>
-              <Settings />
+              <SettingsLayout />
             </ProtectedLayout>
           }
-        />
+        >
+          <Route index element={<SettingsHome />} />
+          <Route path="account" element={<SettingsAccount />} />
+          <Route path="password" element={<SettingsPassword />} />
+          <Route path="privacy" element={<SettingsPrivacy />} />
+          <Route path="appearance" element={<SettingsAppearance />} />
+          <Route path="notifications" element={<SettingsNotifications />} />
+          <Route path="danger" element={<SettingsDanger />} />
+        </Route>
 
         <Route
           path="/admin"
