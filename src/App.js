@@ -19,6 +19,7 @@ import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import Settings from "./pages/Settings";
 import NotificationBell from "./components/NotificationBell";
+import DownloadCreditsBadge from "./components/DownloadCreditsBadge";
 import JoinCircleInvitation from "./pages/JoinCircleInvitation";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -26,6 +27,8 @@ import Terms from "./pages/Terms";
 import CopyrightPolicy from "./pages/CopyrightPolicy";
 import AcceptCopyrightPolicy from "./pages/AcceptCopyrightPolicy";
 import { applyDynamicManifest } from "./pwa/dynamicManifest";
+import { resolveTheme } from "./utils/theme";
+import SessionGuard from "./components/SessionGuard";
 
 function ProtectedLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -41,6 +44,7 @@ function ProtectedLayout({ children }) {
         <div className="min-w-0 flex-1">
           <Navbar onMenuOpen={() => setSidebarOpen(true)}>
             <NotificationBell />
+            <DownloadCreditsBadge />
           </Navbar>
 
           {children}
@@ -68,15 +72,26 @@ function AppearanceManager() {
         ? "blue"
         : savedAccent;
 
-      document.documentElement.dataset.theme = theme;
+      // The preference itself can be "system" — but the DOM attribute the
+      // CSS reads must be an actual "light" or "dark" (see utils/theme.js).
+      document.documentElement.dataset.theme = resolveTheme(theme);
       document.documentElement.dataset.accent = accent;
       applyDynamicManifest(accent);
     };
 
     apply();
     window.addEventListener("study2gate-appearance-change", apply);
-    return () =>
+
+    // Keep "system" mode live: if the OS preference flips while the user
+    // has this open (or between visits, before they've touched Settings
+    // again), re-apply without requiring a trip back to Settings.
+    const media = window.matchMedia?.("(prefers-color-scheme: dark)");
+    media?.addEventListener?.("change", apply);
+
+    return () => {
       window.removeEventListener("study2gate-appearance-change", apply);
+      media?.removeEventListener?.("change", apply);
+    };
   }, [location.pathname]);
 
   return null;
@@ -97,6 +112,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AppearanceManager />
+      <SessionGuard />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

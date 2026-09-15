@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import api from "../api/api";
+import { isInstalledApp } from "../utils/platform";
+import EnableNotificationsPrompt from "../components/EnableNotificationsPrompt";
 
 export default function VerifyEmail() {
   const location = useLocation();
@@ -11,6 +13,7 @@ export default function VerifyEmail() {
   const [info, setInfo] = useState(location.state?.message || "");
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
+  const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
 
   const applySession = (data) => {
     localStorage.setItem("isLoggedIn", "true");
@@ -34,7 +37,15 @@ export default function VerifyEmail() {
       setLoading(true);
       const response = await api.post("/auth/verify-email", { email, code });
       applySession(response.data);
-      navigate("/");
+
+      // App-only: this is the first moment a brand-new user is actually
+      // logged in, so it's the right point to ask about notifications —
+      // but only inside the installed app, never a regular browser tab.
+      if (isInstalledApp()) {
+        setShowNotificationPrompt(true);
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       if (err.response?.status === 429) {
         setError(err.response?.data?.message || "Too many attempts. Please try again later.");
@@ -146,6 +157,11 @@ export default function VerifyEmail() {
           </p>
         </div>
       </div>
+
+      <EnableNotificationsPrompt
+        open={showNotificationPrompt}
+        onDone={() => navigate("/")}
+      />
     </div>
   );
 }

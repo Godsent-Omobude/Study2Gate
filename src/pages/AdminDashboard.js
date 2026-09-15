@@ -16,6 +16,8 @@ import {
   Lock,
   Globe,
   Database,
+  Link2,
+  FileText,
 } from "lucide-react";
 import api from "../api/api";
 import CopyrightReviewPanel from "../components/CopyrightReviewPanel";
@@ -237,14 +239,15 @@ export default function AdminDashboard() {
   };
 
   const deleteFile = async (file) => {
+    const fileLabel = file.title || file.filename || file.externalUrl || `File #${file.id}`;
     const hasCopyrightHistory = file.copyrightStatus && file.copyrightStatus !== "CLEARED";
 
     const confirmMessage = hasCopyrightHistory
-      ? `"${file.title || file.filename}" currently has copyright status "${file.copyrightStatus.replace(
+      ? `"${fileLabel}" currently has copyright status "${file.copyrightStatus.replace(
           /_/g,
           " "
         )}". This hard-delete bypasses the reversible Copyright Review flow — the uploader won't be able to dispute it and it can't be restored afterward. Consider using the Copyright Review Queue's "Remove" action instead, which keeps that option open.\n\nDelete anyway? This cannot be undone.`
-      : `Delete "${file.title || file.filename}"? This action cannot be undone.`;
+      : `Delete "${fileLabel}"? This action cannot be undone.`;
 
     if (!window.confirm(confirmMessage)) {
       return;
@@ -303,6 +306,7 @@ export default function AdminDashboard() {
         file.uploaderName,
         file.user?.fullName,
         file.user?.username,
+        file.externalDomain,
       ].some((value) =>
         String(value || "").toLowerCase().includes(query)
       )
@@ -704,12 +708,25 @@ export default function AdminDashboard() {
                             </p>
 
                             <p className="text-xs text-slate-500 mt-1">
-                              {file.filename}
+                              {file.sourceType === "EXTERNAL_LINK"
+                                ? file.externalDomain || file.externalUrl
+                                : file.filename}
                             </p>
 
-                            <span className="inline-block mt-2 px-2 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase">
-                              {file.type || file.mimetype || "FILE"}
-                            </span>
+                            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                              <span className="inline-block px-2 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase">
+                                {file.type || file.mimetype || "FILE"}
+                              </span>
+                              {file.sourceType === "EXTERNAL_LINK" ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-sky-100 text-sky-700 text-[10px] font-bold uppercase">
+                                  <Link2 className="h-3 w-3" /> External
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase">
+                                  <FileText className="h-3 w-3" /> Uploaded
+                                </span>
+                              )}
+                            </div>
                           </td>
 
                           <td className="px-5 py-4 text-slate-600">
@@ -1038,14 +1055,25 @@ function RecentFiles({ files, onOpenFiles }) {
               key={file.id}
               className="px-5 py-4 border-b last:border-0"
             >
-              <p className="font-bold text-sm text-slate-800">
-                {file.title || file.filename}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="font-bold text-sm text-slate-800">
+                  {file.title || file.filename}
+                </p>
+                {file.sourceType === "EXTERNAL_LINK" && (
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-sky-100 text-sky-700 text-[9px] font-bold uppercase">
+                    <Link2 className="h-2.5 w-2.5" /> External
+                  </span>
+                )}
+              </div>
 
               <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-xs text-slate-500">
                 <span>{file.courseCode || "No course"}</span>
                 <span>{file.uploaderName || "Unknown uploader"}</span>
-                <span>{file.downloads ?? 0} downloads</span>
+                <span>
+                  {file.sourceType === "EXTERNAL_LINK"
+                    ? file.externalDomain || "hosted externally"
+                    : `${file.downloads ?? 0} downloads`}
+                </span>
               </div>
             </div>
           ))

@@ -1,9 +1,29 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { Upload, Download, Layers, Flame, Sparkles } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import {
+  Upload,
+  Download,
+  Layers,
+  Flame,
+  Sparkles,
+  FileText,
+  Link2,
+  ExternalLink,
+} from "lucide-react";
 import api from "../api/api";
 import FlashcardSetCard from "../components/FlashcardSetCard";
 import ReportModal from "../components/ReportModal";
+import OutOfCreditsModal from "../components/OutOfCreditsModal";
+import { broadcastDownloadCredits, readDownloadErrorPayload } from "../utils/downloadCredits";
+
+const isValidHttpsUrl = (value) => {
+  try {
+    const parsed = new URL(String(value || "").trim());
+    return parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+};
 
 export default function Dashboard() {
   const [files, setFiles] = useState([]);
@@ -11,6 +31,7 @@ export default function Dashboard() {
   const [flashcardSetsTotal, setFlashcardSetsTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("All");
+  const [filterSource, setFilterSource] = useState("All");
   const [streak, setStreak] = useState({
     currentStreak: 0,
     longestStreak: 0,
@@ -23,7 +44,9 @@ export default function Dashboard() {
   const [description, setDescription] = useState("");
   const [courseCode, setCourseCode] = useState("");
   const [type, setType] = useState("Material");
+  const [sourceType, setSourceType] = useState("UPLOAD");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [externalUrl, setExternalUrl] = useState("");
   const [copyrightConfirmed, setCopyrightConfirmed] = useState(false);
   const [uploadMsg, setUploadMsg] = useState({ text: "", isError: false });
   const [isUploading, setIsUploading] = useState(false);
@@ -31,9 +54,20 @@ export default function Dashboard() {
   const [downloadedId, setDownloadedId] = useState(null);
   const [reportFile, setReportFile] = useState(null);
   const [loadError, setLoadError] = useState("");
+  const [showOutOfCredits, setShowOutOfCredits] = useState(false);
 
   const userName = localStorage.getItem("fullName") || "Student";
   const [profilePictureUrl, setProfilePictureUrl] = useState("");
+  const location = useLocation();
+
+  // Lets the "Upload Document" button in OutOfCreditsModal (and the
+  // Sidebar's "/upload" link) jump straight to the upload form, from this
+  // page or any other route that navigates here with the hash set.
+  useEffect(() => {
+    if (location.hash === "#upload-section") {
+      document.getElementById("upload-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [location.hash]);
 
   useEffect(() => {
     let objectUrl = "";
@@ -121,7 +155,7 @@ export default function Dashboard() {
     event.preventDefault();
     setUploadMsg({ text: "", isError: false });
 
-    if (!selectedFile) {
+    if (sourceType === "UPLOAD" && !selectedFile) {
       setUploadMsg({
         text: "Please choose a file to upload.",
         isError: true,
@@ -129,9 +163,23 @@ export default function Dashboard() {
       return;
     }
 
+    if (sourceType === "EXTERNAL_LINK") {
+      if (!externalUrl.trim()) {
+        setUploadMsg({ text: "Please provide a resource URL.", isError: true });
+        return;
+      }
+      if (!isValidHttpsUrl(externalUrl)) {
+        setUploadMsg({
+          text: "External resources must use a secure HTTPS URL.",
+          isError: true,
+        });
+        return;
+      }
+    }
+
     if (!copyrightConfirmed) {
       setUploadMsg({
-        text: "Please confirm that you have the right or permission to upload this material.",
+        text: "Please confirm that you have the right or permission to share this material.",
         isError: true,
       });
       return;
@@ -142,8 +190,14 @@ export default function Dashboard() {
     formData.append("description", description);
     formData.append("courseCode", courseCode);
     formData.append("type", type);
+    formData.append("sourceType", sourceType);
     formData.append("copyrightConfirmation", "true");
-    formData.append("file", selectedFile);
+
+    if (sourceType === "UPLOAD") {
+      formData.append("file", selectedFile);
+    } else {
+      formData.append("externalUrl", externalUrl.trim());
+    }
 
     setIsUploading(true);
 
@@ -155,14 +209,20 @@ export default function Dashboard() {
       });
 
       setUploadMsg({
-        text: response.data?.message || "Resource uploaded successfully.",
+        text: response.data?.message || "Resource added successfully.",
         isError: false,
       });
+
+      // A successful UPLOAD (not an external link) earns +2 credits;
+      // the backend already returns the updated balance so the Navbar
+      // badge can update immediately instead of waiting on a refetch.
+      broadcastDownloadCredits(response.data?.downloadCredits);
 
       setTitle("");
       setDescription("");
       setCourseCode("");
       setSelectedFile(null);
+      setExternalUrl("");
       setCopyrightConfirmed(false);
 
       const input = document.getElementById("material-file");
@@ -200,6 +260,10 @@ export default function Dashboard() {
       link.remove();
       window.URL.revokeObjectURL(url);
 
+      // The download route returns the post-spend balance in this header
+      // so the Navbar badge updates immediately.
+      broadcastDownloadCredits(response.headers?.["x-download-credits"]);
+
       setDownloadedId(fileId);
       fetchFiles();
 
@@ -207,12 +271,20 @@ export default function Dashboard() {
         setDownloadedId((current) => (current === fileId ? null : current));
       }, 2200);
     } catch (error) {
-      window.alert(
-        error.response?.data?.message || "Unable to download this file."
-      );
+      const payload = await readDownloadErrorPayload(error);
+
+      if (payload?.code === "INSUFFICIENT_CREDITS") {
+        setShowOutOfCredits(true);
+      } else {
+        window.alert(payload?.message || "Unable to download this file.");
+      }
     } finally {
       setDownloadingId(null);
     }
+  };
+
+  const handleOpenExternal = (url) => {
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const filteredFiles = useMemo(() => {
@@ -221,16 +293,22 @@ export default function Dashboard() {
     return files.filter((file) => {
       const title = String(file.title || "").toLowerCase();
       const courseCode = String(file.courseCode || "").toLowerCase();
+      const externalDomain = String(file.externalDomain || "").toLowerCase();
 
       const matchesSearch =
-        title.includes(term) || courseCode.includes(term);
+        title.includes(term) || courseCode.includes(term) || externalDomain.includes(term);
 
       const matchesFilter =
         filterType === "All" || file.type === filterType;
 
-      return matchesSearch && matchesFilter;
+      const matchesSource =
+        filterSource === "All" ||
+        (filterSource === "Uploaded" && file.sourceType !== "EXTERNAL_LINK") ||
+        (filterSource === "External" && file.sourceType === "EXTERNAL_LINK");
+
+      return matchesSearch && matchesFilter && matchesSource;
     });
-  }, [files, search, filterType]);
+  }, [files, search, filterType, filterSource]);
 
   const totalDownloads = useMemo(
     () => files.reduce((total, file) => total + Number(file.downloads || 0), 0),
@@ -391,12 +469,12 @@ export default function Dashboard() {
         </section>
 
         <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section id="upload-section" className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <h2 className="text-xl font-black text-slate-900">
-              Upload Material
+              Add a Resource
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-              Add a resource to the Study2Gate repository.
+              Add a resource to the Study2Gate repository — upload a file, or link to one that's already online.
             </p>
 
             {uploadMsg.text && (
@@ -410,6 +488,31 @@ export default function Dashboard() {
                 {uploadMsg.text}
               </div>
             )}
+
+            <div className="mt-5 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
+              <button
+                type="button"
+                onClick={() => setSourceType("UPLOAD")}
+                className={`inline-flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-bold transition ${
+                  sourceType === "UPLOAD"
+                    ? "bg-white text-violet-700 shadow-sm"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                <FileText className="h-4 w-4" /> Upload File
+              </button>
+              <button
+                type="button"
+                onClick={() => setSourceType("EXTERNAL_LINK")}
+                className={`inline-flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-bold transition ${
+                  sourceType === "EXTERNAL_LINK"
+                    ? "bg-white text-violet-700 shadow-sm"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                <Link2 className="h-4 w-4" /> External Link
+              </button>
+            </div>
 
             <form onSubmit={handleUploadSubmit} className="mt-5 space-y-4">
               <input
@@ -446,13 +549,35 @@ export default function Dashboard() {
                 className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-500 focus:bg-white"
               />
 
-              <input
-                id="material-file"
-                type="file"
-                required
-                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                className="block w-full text-xs text-slate-500 file:mr-4 file:rounded-full file:border-0 file:bg-violet-50 file:px-4 file:py-2 file:font-bold file:text-violet-700"
-              />
+              {sourceType === "UPLOAD" ? (
+                <input
+                  id="material-file"
+                  type="file"
+                  required
+                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                  className="block w-full text-xs text-slate-500 file:mr-4 file:rounded-full file:border-0 file:bg-violet-50 file:px-4 file:py-2 file:font-bold file:text-violet-700"
+                />
+              ) : (
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-slate-500">
+                    Resource URL
+                  </label>
+                  <div className="relative">
+                    <ExternalLink className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="url"
+                      required
+                      value={externalUrl}
+                      onChange={(e) => setExternalUrl(e.target.value)}
+                      placeholder="https://example.edu.ng/resource.pdf"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm outline-none focus:border-violet-500 focus:bg-white"
+                    />
+                  </div>
+                  <p className="mt-1.5 text-[11px] text-slate-400">
+                    Point to material that's already hosted elsewhere (e.g. a university's own site) — Study2Gate will link to it instead of storing a copy. Must be a secure (HTTPS) link.
+                  </p>
+                </div>
+              )}
 
               <label className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
                 <input
@@ -462,12 +587,24 @@ export default function Dashboard() {
                   className="mt-1 h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
                 />
                 <span className="text-xs leading-5 text-slate-600">
-                  I confirm that I created this material or have the right,
-                  permission, or other lawful basis to upload and share it on
-                  Study2Gate. I understand that Study2Gate screens uploads for
-                  potential copyright issues, and that material flagged by
-                  this screen is held for administrator review rather than
-                  published immediately, and may be restricted or removed.
+                  {sourceType === "UPLOAD" ? (
+                    <>
+                      I confirm that I created this material or have the right,
+                      permission, or other lawful basis to upload and share it on
+                      Study2Gate. I understand that Study2Gate screens uploads for
+                      potential copyright issues, and that material flagged by
+                      this screen is held for administrator review rather than
+                      published immediately, and may be restricted or removed.
+                    </>
+                  ) : (
+                    <>
+                      I confirm this link points to legitimate academic material
+                      and that I'm not aware of any reason Study2Gate shouldn't
+                      point students to it. Study2Gate does not host or take
+                      ownership of externally linked resources, and may remove a
+                      link if it's found to be inappropriate.
+                    </>
+                  )}
                 </span>
               </label>
 
@@ -482,7 +619,11 @@ export default function Dashboard() {
                     className="h-4 w-4 rounded-full border-2 border-white/40 border-t-white animate-spin"
                   />
                 )}
-                {isUploading ? "Publishing..." : "Publish Document"}
+                {isUploading
+                  ? "Publishing..."
+                  : sourceType === "UPLOAD"
+                  ? "Publish Document"
+                  : "Add Resource Link"}
               </button>
             </form>
           </section>
@@ -633,12 +774,34 @@ export default function Dashboard() {
             ))}
           </div>
 
+          <div className="mt-2 flex flex-wrap gap-2">
+            {[
+              { value: "All", label: "All Resources", icon: null },
+              { value: "Uploaded", label: "Uploaded", icon: FileText },
+              { value: "External", label: "External", icon: Link2 },
+            ].map(({ value, label, icon: IconCmp }) => (
+              <button
+                key={value}
+                onClick={() => setFilterSource(value)}
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold ${
+                  filterSource === value
+                    ? "bg-slate-800 text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {IconCmp && <IconCmp className="h-3.5 w-3.5" />}
+                {label}
+              </button>
+            ))}
+          </div>
+
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             {filteredFiles.length ? (
               filteredFiles.map((file) => {
                 const fileId = file.id ?? file._id;
                 const filename =
                   file.filename || file.originalname || file.title;
+                const isExternal = file.sourceType === "EXTERNAL_LINK";
 
                 return (
                   <article
@@ -664,9 +827,26 @@ export default function Dashboard() {
                       {file.description || "No description provided."}
                     </p>
 
+                    <div className="mt-3 flex items-center gap-1.5">
+                      {isExternal ? (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-sky-50 px-2.5 py-1 text-[10px] font-black uppercase text-sky-700">
+                          <Link2 className="h-3 w-3" /> External Resource
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black uppercase text-slate-600">
+                          <FileText className="h-3 w-3" /> Uploaded Resource
+                        </span>
+                      )}
+                      {isExternal && file.externalDomain && (
+                        <span className="text-[11px] text-slate-400">
+                          Source: {file.externalDomain}
+                        </span>
+                      )}
+                    </div>
+
                     <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
                       <span className="text-xs text-slate-400">
-                        Downloads: {file.downloads ?? 0}
+                        {isExternal ? "Hosted externally" : `Downloads: ${file.downloads ?? 0}`}
                       </span>
 
                       <div className="flex items-center gap-3">
@@ -674,32 +854,46 @@ export default function Dashboard() {
                           type="button"
                           onClick={() => setReportFile(file)}
                           className="text-[11px] font-bold text-slate-400 hover:text-red-600"
-                          title="Report copyright infringement"
+                          title="Report this resource"
                         >
                           Report
                         </button>
 
-                        <button
-                          type="button"
-                          onClick={() => handleDownload(fileId, filename)}
-                          disabled={downloadingId === fileId}
-                          className={`inline-flex min-w-[108px] items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition ${
-                            downloadedId === fileId
-                              ? "bg-emerald-50 text-emerald-700"
-                              : "bg-violet-50 text-violet-700 hover:bg-violet-100"
-                          } disabled:cursor-not-allowed disabled:opacity-70`}
-                        >
-                          {downloadingId === fileId ? (
-                            <>
-                              <span className="h-3 w-3 animate-spin rounded-full border-2 border-violet-200 border-t-violet-700" />
-                              Downloading...
-                            </>
-                          ) : downloadedId === fileId ? (
-                            "✓ Downloaded"
-                          ) : (
-                            "↓ Download"
-                          )}
-                        </button>
+                        {isExternal ? (
+                          <button
+                            type="button"
+                            onClick={() => handleOpenExternal(file.externalUrl)}
+                            className="inline-flex min-w-[108px] items-center justify-center gap-2 rounded-lg bg-sky-50 px-3 py-2 text-xs font-bold text-sky-700 hover:bg-sky-100"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" /> Open Resource
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => handleDownload(fileId, filename)}
+                            disabled={downloadingId === fileId}
+                            className={`inline-flex min-w-[108px] items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition ${
+                              downloadedId === fileId
+                                ? "bg-emerald-50 text-emerald-700"
+                                : "bg-violet-50 text-violet-700 hover:bg-violet-100"
+                            } disabled:cursor-not-allowed disabled:opacity-70`}
+                          >
+                            {downloadingId === fileId ? (
+                              <>
+                                <span className="h-3 w-3 animate-spin rounded-full border-2 border-violet-200 border-t-violet-700" />
+                                Downloading...
+                              </>
+                            ) : downloadedId === fileId ? (
+                              <>
+                                <Download className="h-3.5 w-3.5" /> Downloaded
+                              </>
+                            ) : (
+                              <>
+                                <Download className="h-3.5 w-3.5" /> Download
+                              </>
+                            )}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </article>
@@ -721,6 +915,8 @@ export default function Dashboard() {
           onSubmitted={() => setReportFile(null)}
         />
       )}
+
+      <OutOfCreditsModal open={showOutOfCredits} onClose={() => setShowOutOfCredits(false)} />
     </main>
   );
 }

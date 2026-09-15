@@ -4,6 +4,8 @@ import { Download, Sparkles, MapPin, ArrowLeft, Infinity as InfinityIcon } from 
 import api from "../api/api";
 import CircleChat from "../components/CircleChat";
 import { createStudySocket } from "../api/socket";
+import OutOfCreditsModal from "../components/OutOfCreditsModal";
+import { broadcastDownloadCredits, readDownloadErrorPayload } from "../utils/downloadCredits";
 
 const ROLE_BADGE = {
   OWNER: "bg-amber-100 text-amber-700",
@@ -24,6 +26,7 @@ function MaterialsTab({ circleId }) {
   const [pickerSearch, setPickerSearch] = useState("");
   const [sharing, setSharing] = useState(null);
   const [downloadingId, setDownloadingId] = useState(null);
+  const [showOutOfCredits, setShowOutOfCredits] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -91,8 +94,16 @@ function MaterialsTab({ circleId }) {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
+
+      broadcastDownloadCredits(response.headers?.["x-download-credits"]);
     } catch (err) {
-      window.alert(err.response?.data?.message || "Unable to download this file.");
+      const payload = await readDownloadErrorPayload(err);
+
+      if (payload?.code === "INSUFFICIENT_CREDITS") {
+        setShowOutOfCredits(true);
+      } else {
+        window.alert(payload?.message || "Unable to download this file.");
+      }
     } finally {
       setDownloadingId(null);
     }
@@ -202,6 +213,8 @@ function MaterialsTab({ circleId }) {
           ))}
         </div>
       )}
+
+      <OutOfCreditsModal open={showOutOfCredits} onClose={() => setShowOutOfCredits(false)} />
     </div>
   );
 }

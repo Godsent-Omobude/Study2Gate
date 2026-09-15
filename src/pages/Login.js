@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/api";
 import logo from "../assets/study2gate-logo.png";
@@ -20,6 +20,15 @@ export default function Login() {
   // Study Circle invitation they were on before being asked to sign in.
   // Only ever an internal route: never trust this for an off-site redirect.
   const redirectTo = safeInternalPath(searchParams.get("redirect"), "/");
+
+  // Set by the axios interceptor (api/api.js) when a request came back 401
+  // for a user who appeared logged in — i.e. their session actually died
+  // server-side, as opposed to a plain login failure below.
+  useEffect(() => {
+    if (searchParams.get("sessionExpired") === "1") {
+      setError("Your session expired. Please log in again.");
+    }
+  }, [searchParams]);
 
   const handleLogin = async (event) => {
     event.preventDefault();

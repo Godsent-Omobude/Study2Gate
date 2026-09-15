@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import PasswordRequirementsChecklist from "../components/PasswordRequirementsChecklist";
 import PushNotificationSettings from "../components/PushNotificationSettings";
 import { isPasswordValid } from "../utils/passwordRequirements";
+import { resolveTheme } from "../utils/theme";
 
 const themes = ["light", "dark", "system"];
 const accents = [
@@ -16,7 +17,12 @@ const accents = [
 
 const applyAppearance = (theme, accentColor) => {
   const root = document.documentElement;
-  root.dataset.theme = theme;
+  // The stored preference can be "system" — resolveTheme turns that into
+  // the actual "light"/"dark" the CSS knows how to style (see
+  // utils/theme.js). localStorage still keeps the raw preference so the
+  // picker below shows "System default" as selected, and so
+  // AppearanceManager can re-resolve it if the OS preference changes.
+  root.dataset.theme = resolveTheme(theme);
   root.dataset.accent = accentColor;
   localStorage.setItem("theme", theme);
   localStorage.setItem("accentColor", accentColor);

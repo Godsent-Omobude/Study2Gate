@@ -15,6 +15,7 @@ import {
   FileText,
   Ban,
   Trash2,
+  Link2,
 } from "lucide-react";
 import api from "../api/api";
 
@@ -41,6 +42,8 @@ const QUEUE_FILTERS = [
   { key: "reported", label: "Reported" },
   { key: "restricted", label: "Restricted" },
   { key: "removed", label: "Removed" },
+  { key: "uploaded", label: "Uploaded Files" },
+  { key: "external", label: "External Links" },
   { key: "repeat", label: "Repeat-infringer accounts" },
 ];
 
@@ -173,6 +176,20 @@ function StatusBadge({ status }) {
   );
 }
 
+function SourceBadge({ sourceType }) {
+  const isExternal = sourceType === "EXTERNAL_LINK";
+  return (
+    <span
+      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${
+        isExternal ? "bg-sky-100 text-sky-700" : "bg-slate-100 text-slate-600"
+      }`}
+    >
+      {isExternal ? <Link2 className="h-3 w-3" /> : <FileText className="h-3 w-3" />}
+      {isExternal ? "External" : "Uploaded"}
+    </span>
+  );
+}
+
 // --- Queue tab -------------------------------------------------------------
 
 function QueueTab({ notify, fail, onChanged }) {
@@ -253,6 +270,7 @@ function QueueTab({ notify, fail, onChanged }) {
           <thead className="bg-slate-50 text-xs text-slate-500 uppercase">
             <tr>
               <th className="text-left px-5 py-3">File</th>
+              <th className="text-left px-5 py-3">Source</th>
               <th className="text-left px-5 py-3">Uploader</th>
               <th className="text-left px-5 py-3">Risk</th>
               <th className="text-left px-5 py-3">Status</th>
@@ -263,9 +281,9 @@ function QueueTab({ notify, fail, onChanged }) {
           </thead>
           <tbody>
             {loading ? (
-              <EmptyRow colSpan={7} text="Loading..." />
+              <EmptyRow colSpan={8} text="Loading..." />
             ) : files.length === 0 ? (
-              <EmptyRow colSpan={7} text="Nothing matches this filter." />
+              <EmptyRow colSpan={8} text="Nothing matches this filter." />
             ) : (
               files.map((file) => (
                 <tr
@@ -276,6 +294,12 @@ function QueueTab({ notify, fail, onChanged }) {
                   <td className="px-5 py-3">
                     <p className="font-bold text-slate-800">{file.title}</p>
                     <p className="text-xs text-slate-400">{file.courseCode || "No course"}</p>
+                  </td>
+                  <td className="px-5 py-3">
+                    <SourceBadge sourceType={file.sourceType} />
+                    {file.sourceType === "EXTERNAL_LINK" && file.externalDomain && (
+                      <p className="mt-1 text-[11px] text-slate-400">{file.externalDomain}</p>
+                    )}
                   </td>
                   <td className="px-5 py-3">{file.user?.fullName || file.uploaderName || "Unknown"}</td>
                   <td className="px-5 py-3"><RiskBadge risk={file.copyrightRisk} /></td>
@@ -431,83 +455,125 @@ function FileDetailDrawer({ fileId, onClose, onNavigate, onBack, notify, fail, o
               <div className="flex items-center justify-between gap-3 flex-wrap mb-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h4 className="text-lg font-black text-slate-800">{data.file.title}</h4>
+                  <SourceBadge sourceType={data.file.sourceType} />
                   <RiskBadge risk={data.file.copyrightRisk} />
                   <StatusBadge status={data.file.copyrightStatus} />
                 </div>
-                <button
-                  onClick={() => downloadFile(data.file.id, data.file.filename || data.file.title)}
-                  disabled={busy === `download-${data.file.id}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50"
-                >
-                  <Download className="h-3.5 w-3.5" />
-                  {busy === `download-${data.file.id}` ? "Downloading..." : "Download this file"}
-                </button>
+                {data.file.sourceType === "EXTERNAL_LINK" ? (
+                  <a
+                    href={data.file.externalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" /> Open Source
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => downloadFile(data.file.id, data.file.filename || data.file.title)}
+                    disabled={busy === `download-${data.file.id}`}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    {busy === `download-${data.file.id}` ? "Downloading..." : "Download this file"}
+                  </button>
+                )}
               </div>
               <p className="text-sm text-slate-500">
                 {data.file.courseCode || "No course code"} · Uploaded by{" "}
                 {data.file.user?.fullName || data.file.uploaderName || "Unknown"} on {fmtDate(data.file.createdAt)}
               </p>
+              {data.file.sourceType === "EXTERNAL_LINK" && (
+                <p className="mt-2 text-xs text-slate-500">
+                  External resource. Study2Gate does not host this file — it remains available at its original source
+                  {data.file.externalDomain ? `: ${data.file.externalDomain}` : "."}
+                </p>
+              )}
             </div>
 
-            <Card title="Automated evidence">
-              {data.file.copyrightScanFailed ? (
+            {data.file.sourceType === "EXTERNAL_LINK" ? (
+              <Card title="Resource link">
                 <Row
-                  label="Risk score"
+                  label="Submitted URL"
                   value={
-                    <span className="inline-flex items-center gap-1.5 text-amber-700 font-bold">
-                      <AlertTriangle className="h-3.5 w-3.5" /> Scan failed — needs manual review
-                    </span>
+                    <a
+                      href={data.file.externalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-brand-blue hover:underline"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" /> {data.file.externalDomain || data.file.externalUrl}
+                    </a>
                   }
                 />
-              ) : (
-                <Row label="Risk score" value={`${data.file.copyrightScore ?? 0} / 100`} />
-              )}
-              <Row label="Similarity to closest match" value={data.file.similarityScore ? pct(data.file.similarityScore) : "None found"} />
-              {data.file.duplicateOf && (
-                <div className="mt-2 mb-1 flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-                  <div className="min-w-0">
-                    <p className="text-xs text-slate-500">Flagged as a duplicate/near-duplicate of</p>
-                    <p className="font-bold text-slate-800 truncate">{data.file.duplicateOf.title}</p>
-                    <div className="mt-1"><StatusBadge status={data.file.duplicateOf.copyrightStatus} /></div>
+                <Row label="Source domain" value={data.file.externalDomain || "—"} />
+                <p className="text-[11px] text-slate-400 mt-3">
+                  Study2Gate is not uploading or redistributing this file — it's only cataloguing a resource that
+                  already exists at its original source. Automated copyright screening does not apply, since no
+                  content is fetched or stored.
+                </p>
+              </Card>
+            ) : (
+              <Card title="Automated evidence">
+                {data.file.copyrightScanFailed ? (
+                  <Row
+                    label="Risk score"
+                    value={
+                      <span className="inline-flex items-center gap-1.5 text-amber-700 font-bold">
+                        <AlertTriangle className="h-3.5 w-3.5" /> Scan failed — needs manual review
+                      </span>
+                    }
+                  />
+                ) : (
+                  <Row label="Risk score" value={`${data.file.copyrightScore ?? 0} / 100`} />
+                )}
+                <Row label="Similarity to closest match" value={data.file.similarityScore ? pct(data.file.similarityScore) : "None found"} />
+                {data.file.duplicateOf && (
+                  <div className="mt-2 mb-1 flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                    <div className="min-w-0">
+                      <p className="text-xs text-slate-500">Flagged as a duplicate/near-duplicate of</p>
+                      <p className="font-bold text-slate-800 truncate">{data.file.duplicateOf.title}</p>
+                      <div className="mt-1"><StatusBadge status={data.file.duplicateOf.copyrightStatus} /></div>
+                    </div>
+                    <div className="flex shrink-0 gap-2">
+                      <button
+                        onClick={() => onNavigate(data.file.duplicateOf.id)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" /> View original
+                      </button>
+                      <button
+                        onClick={() => downloadFile(data.file.duplicateOf.id, data.file.duplicateOf.title)}
+                        disabled={busy === `download-${data.file.duplicateOf.id}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        {busy === `download-${data.file.duplicateOf.id}` ? "..." : "Download original"}
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex shrink-0 gap-2">
-                    <button
-                      onClick={() => onNavigate(data.file.duplicateOf.id)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
-                    >
-                      <ExternalLink className="h-3.5 w-3.5" /> View original
-                    </button>
-                    <button
-                      onClick={() => downloadFile(data.file.duplicateOf.id, data.file.duplicateOf.title)}
-                      disabled={busy === `download-${data.file.duplicateOf.id}`}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 disabled:opacity-50"
-                    >
-                      <Download className="h-3.5 w-3.5" />
-                      {busy === `download-${data.file.duplicateOf.id}` ? "..." : "Download original"}
-                    </button>
+                )}
+                <Row label="Web match found" value={data.file.webMatchFound ? "Yes" : "No"} />
+                <Row label="Review reason" value={data.file.reviewReason || "—"} />
+                {data.file.sourceReferences?.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-xs font-bold text-slate-500 mb-1">Source references</p>
+                    <ul className="space-y-1">
+                      {data.file.sourceReferences.map((ref, i) => (
+                        <li key={i} className="text-xs text-slate-500 truncate">
+                          <a href={ref.url} target="_blank" rel="noreferrer" className="text-brand-blue hover:underline">
+                            {ref.domain || ref.url}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
-              )}
-              <Row label="Web match found" value={data.file.webMatchFound ? "Yes" : "No"} />
-              <Row label="Review reason" value={data.file.reviewReason || "—"} />
-              {data.file.sourceReferences?.length > 0 && (
-                <div className="mt-2">
-                  <p className="text-xs font-bold text-slate-500 mb-1">Source references</p>
-                  <ul className="space-y-1">
-                    {data.file.sourceReferences.map((ref, i) => (
-                      <li key={i} className="text-xs text-slate-500 truncate">
-                        <a href={ref.url} target="_blank" rel="noreferrer" className="text-brand-blue hover:underline">
-                          {ref.domain || ref.url}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <p className="text-[11px] text-slate-400 mt-3">
-                This is an automated risk signal, not a legal determination of infringement.
-              </p>
-            </Card>
+                )}
+                <p className="text-[11px] text-slate-400 mt-3">
+                  This is an automated risk signal, not a legal determination of infringement.
+                </p>
+              </Card>
+            )}
 
             <Card title="Publication actions">
               <div className="flex flex-wrap gap-2">

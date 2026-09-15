@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, Download } from "lucide-react";
+import { Check, Download, FileText, Link2, ExternalLink } from "lucide-react";
 import api from "../api/api";
 import DisputeModal from "../components/DisputeModal";
+import OutOfCreditsModal from "../components/OutOfCreditsModal";
+import { broadcastDownloadCredits, readDownloadErrorPayload } from "../utils/downloadCredits";
 
 const COPYRIGHT_LABELS = {
   PENDING: { label: "Screening in progress", tone: "bg-slate-100 text-slate-600" },
@@ -17,9 +19,11 @@ export default function Materials() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("All");
+  const [filterSource, setFilterSource] = useState("All");
   const [downloadingId, setDownloadingId] = useState(null);
   const [downloadedId, setDownloadedId] = useState(null);
   const [disputeFile, setDisputeFile] = useState(null);
+  const [showOutOfCredits, setShowOutOfCredits] = useState(false);
 
   const userId = Number(localStorage.getItem("userId"));
 
@@ -61,6 +65,8 @@ export default function Materials() {
       link.remove();
       window.URL.revokeObjectURL(url);
 
+      broadcastDownloadCredits(response.headers?.["x-download-credits"]);
+
       setDownloadedId(fileId);
       fetchFiles();
 
@@ -68,12 +74,20 @@ export default function Materials() {
         setDownloadedId((current) => (current === fileId ? null : current));
       }, 2200);
     } catch (error) {
-      window.alert(
-        error.response?.data?.message || "Unable to download this file."
-      );
+      const payload = await readDownloadErrorPayload(error);
+
+      if (payload?.code === "INSUFFICIENT_CREDITS") {
+        setShowOutOfCredits(true);
+      } else {
+        window.alert(payload?.message || "Unable to download this file.");
+      }
     } finally {
       setDownloadingId(null);
     }
+  };
+
+  const handleOpenExternal = (url) => {
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const filteredFiles = useMemo(() => {
@@ -82,13 +96,19 @@ export default function Materials() {
     return files.filter((file) => {
       const title = String(file.title || "").toLowerCase();
       const courseCode = String(file.courseCode || "").toLowerCase();
+      const externalDomain = String(file.externalDomain || "").toLowerCase();
 
-      const matchesSearch = title.includes(term) || courseCode.includes(term);
+      const matchesSearch =
+        title.includes(term) || courseCode.includes(term) || externalDomain.includes(term);
       const matchesFilter = filterType === "All" || file.type === filterType;
+      const matchesSource =
+        filterSource === "All" ||
+        (filterSource === "Uploaded" && file.sourceType !== "EXTERNAL_LINK") ||
+        (filterSource === "External" && file.sourceType === "EXTERNAL_LINK");
 
-      return matchesSearch && matchesFilter;
+      return matchesSearch && matchesFilter && matchesSource;
     });
-  }, [files, search, filterType]);
+  }, [files, search, filterType, filterSource]);
 
   const totalDownloads = useMemo(
     () => files.reduce((total, file) => total + Number(file.downloads || 0), 0),
@@ -168,6 +188,28 @@ export default function Materials() {
             ))}
           </div>
 
+          <div className="mt-2 flex flex-wrap gap-2">
+            {[
+              { value: "All", label: "All Resources", icon: null },
+              { value: "Uploaded", label: "Uploaded", icon: FileText },
+              { value: "External", label: "External", icon: Link2 },
+            ].map(({ value, label, icon: IconCmp }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setFilterSource(value)}
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold ${
+                  filterSource === value
+                    ? "bg-slate-800 text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {IconCmp && <IconCmp className="h-3.5 w-3.5" />}
+                {label}
+              </button>
+            ))}
+          </div>
+
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             {loading ? (
               <div className="md:col-span-2 rounded-2xl border border-dashed border-slate-300 p-10 text-center text-sm font-medium text-slate-400">
@@ -178,6 +220,7 @@ export default function Materials() {
                 const fileId = file.id ?? file._id;
                 const filename =
                   file.filename || file.originalname || file.title;
+                const isExternal = file.sourceType === "EXTERNAL_LINK";
 
                 return (
                   <article
@@ -202,6 +245,23 @@ export default function Materials() {
                     <p className="mt-1 line-clamp-2 text-xs text-slate-500">
                       {file.description || "No description provided."}
                     </p>
+
+                    <div className="mt-3 flex items-center gap-1.5">
+                      {isExternal ? (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-sky-50 px-2.5 py-1 text-[10px] font-black uppercase text-sky-700">
+                          <Link2 className="h-3 w-3" /> External Resource
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black uppercase text-slate-600">
+                          <FileText className="h-3 w-3" /> Uploaded Resource
+                        </span>
+                      )}
+                      {isExternal && file.externalDomain && (
+                        <span className="text-[11px] text-slate-400">
+                          Source: {file.externalDomain}
+                        </span>
+                      )}
+                    </div>
 
                     {file.copyrightStatus && file.copyrightStatus !== "CLEARED" && (
                       <div className="mt-3 rounded-xl bg-slate-50 p-3">
@@ -234,30 +294,40 @@ export default function Materials() {
 
                     <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
                       <span className="text-xs text-slate-400">
-                        Downloads: {file.downloads ?? 0}
+                        {isExternal ? "Hosted externally" : `Downloads: ${file.downloads ?? 0}`}
                       </span>
 
-                      <button
-                        type="button"
-                        onClick={() => handleDownload(fileId, filename)}
-                        disabled={downloadingId === fileId}
-                        className={`inline-flex min-w-[108px] items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition ${
-                          downloadedId === fileId
-                            ? "bg-emerald-50 text-emerald-700"
-                            : "bg-violet-50 text-violet-700 hover:bg-violet-100"
-                        } disabled:cursor-not-allowed disabled:opacity-70`}
-                      >
-                        {downloadingId === fileId ? (
-                          <>
-                            <span className="h-3 w-3 animate-spin rounded-full border-2 border-violet-200 border-t-violet-700" />
-                            Downloading...
-                          </>
-                        ) : downloadedId === fileId ? (
-                          <><Check className="h-3.5 w-3.5" /> Downloaded</>
-                        ) : (
-                          <><Download className="h-3.5 w-3.5" /> Download</>
-                        )}
-                      </button>
+                      {isExternal ? (
+                        <button
+                          type="button"
+                          onClick={() => handleOpenExternal(file.externalUrl)}
+                          className="inline-flex min-w-[108px] items-center justify-center gap-2 rounded-lg bg-sky-50 px-3 py-2 text-xs font-bold text-sky-700 hover:bg-sky-100"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" /> Open Resource
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleDownload(fileId, filename)}
+                          disabled={downloadingId === fileId}
+                          className={`inline-flex min-w-[108px] items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition ${
+                            downloadedId === fileId
+                              ? "bg-emerald-50 text-emerald-700"
+                              : "bg-violet-50 text-violet-700 hover:bg-violet-100"
+                          } disabled:cursor-not-allowed disabled:opacity-70`}
+                        >
+                          {downloadingId === fileId ? (
+                            <>
+                              <span className="h-3 w-3 animate-spin rounded-full border-2 border-violet-200 border-t-violet-700" />
+                              Downloading...
+                            </>
+                          ) : downloadedId === fileId ? (
+                            <><Check className="h-3.5 w-3.5" /> Downloaded</>
+                          ) : (
+                            <><Download className="h-3.5 w-3.5" /> Download</>
+                          )}
+                        </button>
+                      )}
                     </div>
                   </article>
                 );
@@ -291,6 +361,8 @@ export default function Materials() {
           }}
         />
       )}
+
+      <OutOfCreditsModal open={showOutOfCredits} onClose={() => setShowOutOfCredits(false)} />
     </main>
   );
 }
