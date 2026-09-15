@@ -777,7 +777,6 @@ export default function Dashboard() {
           <div className="mt-2 flex flex-wrap gap-2">
             {[
               { value: "All", label: "All Resources", icon: null },
-              { value: "Uploaded", label: "Uploaded", icon: FileText },
               { value: "External", label: "External", icon: Link2 },
             ].map(({ value, label, icon: IconCmp }) => (
               <button
