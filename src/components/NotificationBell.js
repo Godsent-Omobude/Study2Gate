@@ -60,7 +60,7 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-12 z-50 w-[min(360px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+        <div className="fixed left-4 right-4 top-16 z-50 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:absolute sm:left-auto sm:right-0 sm:top-12 sm:w-[360px]">
           <div className="flex items-center justify-between border-b border-slate-100 p-4">
             <div><p className="font-black text-slate-900">Notifications</p><p className="text-xs text-slate-400">{unreadCount} unread</p></div>
             <button type="button" onClick={markAllRead} disabled={!unreadCount} className="text-xs font-bold text-violet-600 disabled:text-slate-300">Mark all read</button>

@@ -71,7 +71,12 @@ export default function Sidebar({ open, onClose }) {
     };
   }, []);
 
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+
   const logout = () => {
+    setLoggingOut(true);
+
     // Only this device's push registration is removed — other
     // devices/browsers signed into the same account keep receiving
     // pushes, since logging out here says nothing about those sessions.
@@ -234,7 +239,7 @@ export default function Sidebar({ open, onClose }) {
           </div>
           <button
             type="button"
-            onClick={logout}
+            onClick={() => setShowLogoutConfirm(true)}
             className="flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-extrabold text-red-600 transition hover:bg-red-100"
           >
             <LogOut className="h-4 w-4" />
@@ -242,6 +247,45 @@ export default function Sidebar({ open, onClose }) {
           </button>
         </div>
       </aside>
+
+      {showLogoutConfirm && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/50 p-4"
+          onClick={() => !loggingOut && setShowLogoutConfirm(false)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-black text-slate-900">Log out?</h3>
+            <p className="mt-1 text-sm text-slate-500">
+              You'll need to sign in again to access your account on this device.
+            </p>
+
+            <div className="mt-5 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                disabled={loggingOut}
+                className="rounded-xl px-4 py-2.5 text-sm font-bold text-slate-500 disabled:opacity-60"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={logout}
+                disabled={loggingOut}
+                className="flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-700 disabled:opacity-60"
+              >
+                {loggingOut && (
+                  <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                )}
+                {loggingOut ? "Logging out..." : "Log out"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
