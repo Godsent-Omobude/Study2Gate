@@ -81,7 +81,6 @@ export function SettingsProvider({ children }) {
     };
 
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const value = {
