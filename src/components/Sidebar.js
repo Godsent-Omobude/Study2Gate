@@ -257,9 +257,9 @@ export default function Sidebar({ open, onClose }) {
             className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-black text-slate-900">Log out?</h3>
+            <h3 className="text-lg font-black text-slate-900">Log out</h3>
             <p className="mt-1 text-sm text-slate-500">
-              You'll need to sign in again to access your account on this device.
+              Are you sure you want to log out?.
             </p>
 
             <div className="mt-5 flex justify-end gap-3">

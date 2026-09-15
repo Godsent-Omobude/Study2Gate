@@ -11,7 +11,6 @@ import {
   ExternalLink,
 } from "lucide-react";
 import api from "../api/api";
-import FlashcardSetCard from "../components/FlashcardSetCard";
 import ReportModal from "../components/ReportModal";
 import OutOfCreditsModal from "../components/OutOfCreditsModal";
 import { broadcastDownloadCredits, readDownloadErrorPayload } from "../utils/downloadCredits";
@@ -550,13 +549,36 @@ export default function Dashboard() {
               />
 
               {sourceType === "UPLOAD" ? (
-                <input
-                  id="material-file"
-                  type="file"
-                  required
-                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                  className="block w-full text-xs text-slate-500 file:mr-4 file:rounded-full file:border-0 file:bg-violet-50 file:px-4 file:py-2 file:font-bold file:text-violet-700"
-                />
+                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-3 sm:p-4">
+                  <label
+                    htmlFor="material-file"
+                    className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 transition hover:border-violet-300 hover:bg-violet-50/40"
+                  >
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700">
+                      <Upload className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-bold text-slate-800">
+                        {selectedFile ? selectedFile.name : "Choose a file"}
+                      </span>
+                      <span className="mt-0.5 block text-[11px] text-slate-400">
+                        {selectedFile
+                          ? `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • Ready to upload`
+                          : "PDF, DOCX, PPTX or image • Maximum 25 MB"}
+                      </span>
+                    </span>
+                    <span className="shrink-0 rounded-lg bg-violet-50 px-3 py-2 text-xs font-black text-violet-700">
+                      Browse
+                    </span>
+                  </label>
+                  <input
+                    id="material-file"
+                    type="file"
+                    required
+                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                    className="sr-only"
+                  />
+                </div>
               ) : (
                 <div>
                   <label className="mb-1.5 block text-xs font-bold text-slate-500">
@@ -679,62 +701,6 @@ export default function Dashboard() {
                 </p>
               )}
             </section>
-
-            <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-xl font-black text-slate-900">
-                  My Flashcard Sets
-                </h2>
-                <p className="mt-1 text-sm text-slate-500">
-                  Your latest saved AI-generated sets.
-                </p>
-              </div>
-              <Link
-                to="/my-flashcards"
-                className="whitespace-nowrap rounded-xl border border-violet-200 px-3 py-2 text-xs font-bold text-violet-700 hover:bg-violet-50"
-              >
-                View All →
-              </Link>
-            </div>
-
-            {flashcardSets.length ? (
-              <div className="space-y-3">
-                {flashcardSets.map((set) => (
-                  <FlashcardSetCard
-                    key={set.id}
-                    set={set}
-                    onDelete={async (id) => {
-                      try {
-                        await api.delete(`/ai/flashcards/${id}`);
-                        fetchFlashcards();
-                      } catch (error) {
-                        window.alert(
-                          error.response?.data?.message ||
-                            "Unable to delete flashcard set."
-                        );
-                      }
-                    }}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-2xl border border-dashed border-slate-300 p-8 text-center">
-                <p className="font-bold text-slate-700">
-                  No flashcard sets yet.
-                </p>
-                <p className="mt-1 text-sm text-slate-500">
-                  Generate one from your study material.
-                </p>
-                <Link
-                  to="/generate-flashcards"
-                  className="mt-4 inline-block rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white"
-                >
-                  Generate Now
-                </Link>
-              </div>
-            )}
-            </section>
           </div>
         </div>
 
@@ -794,7 +760,7 @@ export default function Dashboard() {
             ))}
           </div>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="materials-file-strip mt-5 -mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0">
             {filteredFiles.length ? (
               filteredFiles.map((file) => {
                 const fileId = file.id ?? file._id;
@@ -805,7 +771,7 @@ export default function Dashboard() {
                 return (
                   <article
                     key={fileId}
-                    className="rounded-2xl border border-slate-200 p-5 transition hover:shadow-md"
+                    className="w-[86vw] min-w-[86vw] shrink-0 snap-start rounded-2xl border border-slate-200 bg-white p-4 transition hover:shadow-md sm:w-[70vw] sm:min-w-[70vw] md:w-auto md:min-w-0 md:p-5"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <span className="rounded-md bg-violet-50 px-2.5 py-1 text-[10px] font-black uppercase text-violet-700">

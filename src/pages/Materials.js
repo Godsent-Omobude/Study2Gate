@@ -210,7 +210,7 @@ export default function Materials() {
             ))}
           </div>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="materials-file-strip mt-5 -mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0">
             {loading ? (
               <div className="md:col-span-2 rounded-2xl border border-dashed border-slate-300 p-10 text-center text-sm font-medium text-slate-400">
                 Loading your materials...
@@ -225,7 +225,7 @@ export default function Materials() {
                 return (
                   <article
                     key={fileId}
-                    className="rounded-2xl border border-slate-200 p-5 transition hover:shadow-md"
+                    className="w-[86vw] min-w-[86vw] shrink-0 snap-start rounded-2xl border border-slate-200 bg-white p-4 transition hover:shadow-md sm:w-[70vw] sm:min-w-[70vw] md:w-auto md:min-w-0 md:p-5"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <span className="rounded-md bg-violet-50 px-2.5 py-1 text-[10px] font-black uppercase text-violet-700">

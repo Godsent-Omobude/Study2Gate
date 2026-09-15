@@ -313,3 +313,45 @@ html[data-theme="dark"] select {
     transform: scaleY(0.7);
   }
 }
+
+
+/* Mobile app-like viewport behaviour. Keep the document inside the device width
+   while allowing intentionally scrollable content (such as material cards) to
+   manage its own horizontal overflow. */
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
+.materials-file-strip {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y;
+}
+
+.materials-file-strip > article {
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  .materials-file-strip {
+    scrollbar-width: none;
+  }
+
+  .materials-file-strip::-webkit-scrollbar {
+    display: none;
+  }
+}
