@@ -3,8 +3,10 @@ import {
   ChevronRight,
   Lock,
   ShieldCheck,
+  ShieldAlert,
   Palette,
   Bell,
+  Smartphone,
   Trash2,
 } from "lucide-react";
 import { useSettings } from "./SettingsContext";
@@ -96,6 +98,18 @@ export default function SettingsHome() {
           icon={<ShieldCheck size={18} />}
           label="Privacy"
         />
+        <Row
+          to="/settings/standing"
+          icon={<ShieldAlert size={18} />}
+          label="Account standing"
+          hint={
+            settings.suspendedUntil && new Date(settings.suspendedUntil) > new Date()
+              ? "Suspended"
+              : settings.copyrightWarnings
+              ? `${settings.copyrightWarnings} warning${settings.copyrightWarnings === 1 ? "" : "s"}`
+              : "Good standing"
+          }
+        />
       </Group>
 
       <Group title="Preferences">
@@ -111,6 +125,11 @@ export default function SettingsHome() {
           to="/settings/notifications"
           icon={<Bell size={18} />}
           label="Notifications"
+        />
+        <Row
+          to="/settings/devices"
+          icon={<Smartphone size={18} />}
+          label="Devices"
         />
       </Group>
 

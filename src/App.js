@@ -22,8 +22,10 @@ import SettingsHome from "./pages/settings/SettingsHome";
 import SettingsAccount from "./pages/settings/SettingsAccount";
 import SettingsPassword from "./pages/settings/SettingsPassword";
 import SettingsPrivacy from "./pages/settings/SettingsPrivacy";
+import SettingsStanding from "./pages/settings/SettingsStanding";
 import SettingsAppearance from "./pages/settings/SettingsAppearance";
 import SettingsNotifications from "./pages/settings/SettingsNotifications";
+import SettingsDevices from "./pages/settings/SettingsDevices";
 import SettingsDanger from "./pages/settings/SettingsDanger";
 import NotificationBell from "./components/NotificationBell";
 import DownloadCreditsBadge from "./components/DownloadCreditsBadge";
@@ -230,8 +232,10 @@ export default function App() {
           <Route path="account" element={<SettingsAccount />} />
           <Route path="password" element={<SettingsPassword />} />
           <Route path="privacy" element={<SettingsPrivacy />} />
+          <Route path="standing" element={<SettingsStanding />} />
           <Route path="appearance" element={<SettingsAppearance />} />
           <Route path="notifications" element={<SettingsNotifications />} />
+          <Route path="devices" element={<SettingsDevices />} />
           <Route path="danger" element={<SettingsDanger />} />
         </Route>
 

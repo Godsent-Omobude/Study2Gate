@@ -1,62 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Menu } from "lucide-react";
-import api from "../api/api";
+import useProfilePicture from "../hooks/useProfilePicture";
 
 export default function Navbar({ onMenuOpen, children }) {
   const userName = localStorage.getItem("fullName") || "Student";
   const profileInitial = (userName.trim()[0] || "S").toUpperCase();
-  const [profilePictureUrl, setProfilePictureUrl] = useState("");
-
-  const loadProfilePicture = async () => {
-    try {
-      if (!localStorage.getItem("profilePicture")) {
-        setProfilePictureUrl("");
-        return;
-      }
-
-      const response = await api.get("/settings/profile-picture", {
-        responseType: "blob",
-      });
-
-      if (!response.data || response.data.size === 0) {
-        setProfilePictureUrl("");
-        return;
-      }
-
-      const url = URL.createObjectURL(response.data);
-      setProfilePictureUrl((old) => {
-        if (old) URL.revokeObjectURL(old);
-        return url;
-      });
-    } catch {
-      setProfilePictureUrl("");
-    }
-  };
-
-  useEffect(() => {
-    loadProfilePicture();
-
-    const handleProfilePictureUpdated = () => {
-      loadProfilePicture();
-    };
-
-    window.addEventListener(
-      "study2gate-profile-picture-updated",
-      handleProfilePictureUpdated
-    );
-
-    return () => {
-      window.removeEventListener(
-        "study2gate-profile-picture-updated",
-        handleProfilePictureUpdated
-      );
-
-      setProfilePictureUrl((old) => {
-        if (old) URL.revokeObjectURL(old);
-        return "";
-      });
-    };
-  }, []);
+  const profilePictureUrl = useProfilePicture();
 
   return (
     <nav className="sticky top-0 z-30 h-[72px] border-b border-slate-200/90 bg-white/95 px-4 shadow-[0_1px_12px_rgba(15,23,42,0.05)] backdrop-blur sm:px-6">

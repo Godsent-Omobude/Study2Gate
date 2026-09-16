@@ -7,8 +7,10 @@ const TITLES = {
   "/settings/account": "Account",
   "/settings/password": "Password and security",
   "/settings/privacy": "Privacy",
+  "/settings/standing": "Account standing",
   "/settings/appearance": "Appearance",
   "/settings/notifications": "Notifications",
+  "/settings/devices": "Devices",
   "/settings/danger": "Delete account",
 };
 

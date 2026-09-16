@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import api from "../api/api";
 import usePushMessaging from "../hooks/usePushMessaging";
+import useProfilePicture from "../hooks/useProfilePicture";
 import { unregisterPushDevice } from "../api/pushNotifications";
 import { revokeLocalToken } from "../firebase/messaging";
 import study2gateLogo from "../assets/study2gate-logo.png";
 const navItems = [
   { to: "/", label: "Dashboard", icon: "home", end: true },
   { to: "/materials", label: "My Materials", icon: "folder" },
-  { to: "/upload", label: "Upload Material", icon: "upload" },
+  { to: "/upload#upload-section", label: "Upload Material", icon: "upload" },
   { to: "/generate-flashcards", label: "Generate Flashcards", icon: "spark" },
   { to: "/my-flashcards", label: "My Flashcards", icon: "cards" },
   { to: "/circles", label: "Study Circles", icon: "circle" },
@@ -44,32 +45,12 @@ export default function Sidebar({ open, onClose }) {
   const username = localStorage.getItem("username") || "";
   const role = localStorage.getItem("role") || "student";
   const isAdmin = role === "admin";
-  const [profilePictureUrl, setProfilePictureUrl] = useState("");
+  const profilePictureUrl = useProfilePicture();
 
   // Keeps this device's FCM registration current for the lifetime of the
   // session. Present here (rather than in App.js) because Sidebar is
   // mounted on every authenticated page via ProtectedLayout.
   usePushMessaging();
-
-  useEffect(() => {
-    let objectUrl = "";
-    const loadPicture = async () => {
-      try {
-        if (!localStorage.getItem("profilePicture")) return;
-        const response = await api.get("/settings/profile-picture", {
-          responseType: "blob",
-        });
-        objectUrl = URL.createObjectURL(response.data);
-        setProfilePictureUrl(objectUrl);
-      } catch {
-        setProfilePictureUrl("");
-      }
-    };
-    loadPicture();
-    return () => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, []);
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -257,9 +238,9 @@ export default function Sidebar({ open, onClose }) {
             className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-black text-slate-900">Log out</h3>
+            <h3 className="text-lg font-black text-slate-900">Log out?</h3>
             <p className="mt-1 text-sm text-slate-500">
-              Are you sure you want to log out?.
+              You'll need to sign in again to access your account on this device.
             </p>
 
             <div className="mt-5 flex justify-end gap-3">

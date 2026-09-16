@@ -8,6 +8,10 @@ export const unregisterPushDevice = (token) =>
 
 export const getPushStatus = () => api.get("/notifications/status");
 
+export const listPushDevices = () => api.get("/notifications/devices");
+
+export const removePushDevice = (id) => api.delete(`/notifications/devices/${id}`);
+
 export const getNotificationPreferences = () => api.get("/settings/notifications");
 
 export const updateNotificationPreferences = (updates) =>

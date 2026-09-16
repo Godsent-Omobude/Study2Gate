@@ -144,17 +144,22 @@ export default function AdminDashboard() {
     clearMessages();
     setLoading(true);
 
+    // AdminRoute already verified admin access (and showed its own
+    // "Verifying administrator access..." screen) before this component
+    // was allowed to mount — this call just fetches this page's own admin
+    // profile card, not a second access check, so it shouldn't block
+    // render. Users and Files are large lists the Overview tab doesn't
+    // need; openSection() already lazy-loads each one the first time its
+    // tab is opened, so fetching them here too would just be duplicate
+    // work on every visit.
+    verifyAdmin();
+
     try {
-      await Promise.all([
-        verifyAdmin(),
-        loadStats(),
-        loadUsers(),
-        loadFiles(),
-      ]);
+      await loadStats();
     } finally {
       setLoading(false);
     }
-  }, [clearMessages, verifyAdmin, loadStats, loadUsers, loadFiles]);
+  }, [clearMessages, verifyAdmin, loadStats]);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -321,9 +326,6 @@ export default function AdminDashboard() {
             <Icon name="shield" className="h-7 w-7" />
           </div>
           <p className="font-bold text-slate-700">
-            Verifying administrator access...
-          </p>
-          <p className="text-sm text-slate-500 mt-1">
             Loading Study2Gate controls
           </p>
         </div>
@@ -391,7 +393,7 @@ export default function AdminDashboard() {
         )}
 
         {/* Navigation */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-7">
+        <div className="mb-7 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
           <AdminNavButton
             active={activeSection === "overview"}
             icon="bar-chart"
@@ -450,48 +452,27 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <StatCard
-                icon="users"
-                title="Total Users"
-                value={stats?.users ?? 0}
-              />
+            <div>
+              <p className="mb-2 text-xs font-black uppercase tracking-wide text-slate-400">
+                People
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <StatCard icon="users" title="Total Users" value={stats?.users} />
+                <StatCard icon="graduation-cap" title="Students" value={stats?.students} />
+                <StatCard icon="shield" title="Administrators" value={stats?.admins} />
+              </div>
+            </div>
 
-              <StatCard
-                icon="graduation-cap"
-                title="Students"
-                value={stats?.students ?? 0}
-              />
-
-              <StatCard
-                icon="shield"
-                title="Administrators"
-                value={stats?.admins ?? 0}
-              />
-
-              <StatCard
-                icon="folder"
-                title="Uploaded Files"
-                value={stats?.files ?? 0}
-              />
-
-              <StatCard
-                icon="download"
-                title="Downloads"
-                value={stats?.downloads ?? 0}
-              />
-
-              <StatCard
-                icon="layers"
-                title="Flashcard Sets"
-                value={stats?.flashcardSets ?? 0}
-              />
-
-              <StatCard
-                icon="cards"
-                title="Flashcards"
-                value={stats?.flashcards ?? 0}
-              />
+            <div className="mt-5">
+              <p className="mb-2 text-xs font-black uppercase tracking-wide text-slate-400">
+                Content
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <StatCard icon="folder" title="Uploaded Files" value={stats?.files} />
+                <StatCard icon="download" title="Downloads" value={stats?.downloads} />
+                <StatCard icon="layers" title="Flashcard Sets" value={stats?.flashcardSets} />
+                <StatCard icon="cards" title="Flashcards" value={stats?.flashcards} />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-6">
@@ -529,126 +510,108 @@ export default function AdminDashboard() {
               />
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-slate-50 border-b border-slate-200">
-                    <tr>
-                      <th className="text-left px-5 py-4">User</th>
-                      <th className="text-left px-5 py-4">Role</th>
-                      <th className="text-left px-5 py-4">Files</th>
-                      <th className="text-left px-5 py-4">Flashcards</th>
-                      <th className="text-right px-5 py-4">Actions</th>
-                    </tr>
-                  </thead>
+            {filteredUsers.length === 0 ? (
+              <EmptyState text="No users match your search." />
+            ) : (
+              <div className="space-y-3">
+                {filteredUsers.map((user) => {
+                  const isCurrentAdmin = user.id === adminInfo?.id;
 
-                  <tbody>
-                    {filteredUsers.length === 0 ? (
-                      <EmptyRow
-                        colSpan="5"
-                        text="No users match your search."
-                      />
-                    ) : (
-                      filteredUsers.map((user) => {
-                        const isCurrentAdmin =
-                          user.id === adminInfo?.id;
+                  return (
+                    <div
+                      key={user.id}
+                      className="bg-white border border-slate-200 rounded-2xl p-4"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-blue/10 text-brand-blue font-black">
+                          {(user.fullName || "U").charAt(0).toUpperCase()}
+                        </div>
 
-                        return (
-                          <tr
-                            key={user.id}
-                            className="border-b last:border-0 hover:bg-slate-50"
-                          >
-                            <td className="px-5 py-4">
-                              <p className="font-bold text-slate-800">
-                                {user.fullName}
-                              </p>
-                              <p className="text-xs text-slate-500">
-                                {user.username}
-                              </p>
-                            </td>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-bold text-slate-800 truncate">
+                              {user.fullName}
+                            </p>
+                            {isCurrentAdmin && (
+                              <span className="text-[10px] font-black uppercase text-brand-blue">
+                                You
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-500">{user.username}</p>
 
-                            <td className="px-5 py-4">
-                              <div className="flex flex-wrap items-center gap-1.5">
-                                <RoleBadge role={user.role} />
-                                {user.terminatedAt && <StandingBadge tone="terminated">Terminated</StandingBadge>}
-                                {!user.terminatedAt &&
-                                  user.suspendedUntil &&
-                                  new Date(user.suspendedUntil) > new Date() && (
-                                    <StandingBadge tone="suspended">Suspended</StandingBadge>
-                                  )}
-                                {Boolean(user.copyrightWarnings) && (
-                                  <StandingBadge tone="warned">
-                                    {user.copyrightWarnings} warning{user.copyrightWarnings === 1 ? "" : "s"}
-                                  </StandingBadge>
-                                )}
-                              </div>
-                            </td>
+                          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                            <RoleBadge role={user.role} />
+                            {user.terminatedAt && (
+                              <StandingBadge tone="terminated">Terminated</StandingBadge>
+                            )}
+                            {!user.terminatedAt &&
+                              user.suspendedUntil &&
+                              new Date(user.suspendedUntil) > new Date() && (
+                                <StandingBadge tone="suspended">Suspended</StandingBadge>
+                              )}
+                            {Boolean(user.copyrightWarnings) && (
+                              <StandingBadge tone="warned">
+                                {user.copyrightWarnings} warning{user.copyrightWarnings === 1 ? "" : "s"}
+                              </StandingBadge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
 
-                            <td className="px-5 py-4 text-slate-600">
-                              {user._count?.files ?? 0}
-                            </td>
+                      <div className="mt-3 flex items-center gap-4 text-xs font-semibold text-slate-500">
+                        <span>{user._count?.files ?? 0} files</span>
+                        <span>{user._count?.flashcardSets ?? 0} flashcard sets</span>
+                      </div>
 
-                            <td className="px-5 py-4 text-slate-600">
-                              {user._count?.flashcardSets ?? 0}
-                            </td>
+                      <div className="mt-3 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
+                        {isCurrentAdmin ? (
+                          <span className="px-3 py-2 rounded-lg bg-slate-100 text-slate-500 font-semibold text-sm">
+                            Your account
+                          </span>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => setCopyrightUserId(user.id)}
+                              disabled={Boolean(actionLoading)}
+                              className="px-3 py-2 rounded-lg bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              Copyright
+                            </button>
 
-                            <td className="px-5 py-4">
-                              <div className="flex flex-wrap justify-end gap-2">
-                                {!isCurrentAdmin && (
-                                  <button
-                                    onClick={() => setCopyrightUserId(user.id)}
-                                    disabled={Boolean(actionLoading)}
-                                    className="px-3 py-2 rounded-lg bg-slate-100 text-slate-700 font-bold hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                  >
-                                    Copyright
-                                  </button>
-                                )}
+                            <button
+                              onClick={() => changeRole(user)}
+                              disabled={Boolean(actionLoading)}
+                              className={
+                                user.role === "admin"
+                                  ? "px-3 py-2 rounded-lg bg-orange-50 text-orange-700 font-bold text-sm hover:bg-orange-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  : "px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-bold text-sm hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                              }
+                            >
+                              {actionLoading === `role-${user.id}`
+                                ? "Updating..."
+                                : user.role === "admin"
+                                ? "Remove Admin"
+                                : "Make Admin"}
+                            </button>
 
-                                {!isCurrentAdmin && (
-                                  <button
-                                    onClick={() => changeRole(user)}
-                                    disabled={Boolean(actionLoading)}
-                                    className={
-                                      user.role === "admin"
-                                        ? "px-3 py-2 rounded-lg bg-orange-50 text-orange-700 font-bold hover:bg-orange-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        : "px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-bold hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    }
-                                  >
-                                    {actionLoading === `role-${user.id}`
-                                      ? "Updating..."
-                                      : user.role === "admin"
-                                      ? "Remove Admin"
-                                      : "Make Admin"}
-                                  </button>
-                                )}
-
-                                {!isCurrentAdmin && (
-                                  <button
-                                    onClick={() => deleteUser(user)}
-                                    disabled={Boolean(actionLoading)}
-                                    className="px-3 py-2 rounded-lg bg-red-50 text-red-700 font-bold hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                  >
-                                    {actionLoading === `delete-user-${user.id}`
-                                      ? "Deleting..."
-                                      : "Delete"}
-                                  </button>
-                                )}
-
-                                {isCurrentAdmin && (
-                                  <span className="px-3 py-2 rounded-lg bg-slate-100 text-slate-500 font-semibold">
-                                    Your account
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
+                            <button
+                              onClick={() => deleteUser(user)}
+                              disabled={Boolean(actionLoading)}
+                              className="px-3 py-2 rounded-lg bg-red-50 text-red-700 font-bold text-sm hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {actionLoading === `delete-user-${user.id}`
+                                ? "Deleting..."
+                                : "Delete"}
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            </div>
+            )}
           </section>
         )}
 
@@ -676,101 +639,74 @@ export default function AdminDashboard() {
               />
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-slate-50 border-b border-slate-200">
-                    <tr>
-                      <th className="text-left px-5 py-4">Material</th>
-                      <th className="text-left px-5 py-4">Course</th>
-                      <th className="text-left px-5 py-4">Uploader</th>
-                      <th className="text-left px-5 py-4">Copyright</th>
-                      <th className="text-left px-5 py-4">Downloads</th>
-                      <th className="text-right px-5 py-4">Action</th>
-                    </tr>
-                  </thead>
+            {filteredFiles.length === 0 ? (
+              <EmptyState text="No uploaded files match your search." />
+            ) : (
+              <div className="space-y-3">
+                {filteredFiles.map((file) => (
+                  <div
+                    key={file.id}
+                    className="bg-white border border-slate-200 rounded-2xl p-4"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="font-bold text-slate-800 truncate">
+                          {file.title || file.filename}
+                        </p>
+                        <p className="text-xs text-slate-500 mt-0.5 truncate">
+                          {file.sourceType === "EXTERNAL_LINK"
+                            ? file.externalDomain || file.externalUrl
+                            : file.filename}
+                        </p>
+                      </div>
+                      <FileCopyrightBadge status={file.copyrightStatus} />
+                    </div>
 
-                  <tbody>
-                    {filteredFiles.length === 0 ? (
-                      <EmptyRow
-                        colSpan="6"
-                        text="No uploaded files match your search."
-                      />
-                    ) : (
-                      filteredFiles.map((file) => (
-                        <tr
-                          key={file.id}
-                          className="border-b last:border-0 hover:bg-slate-50"
-                        >
-                          <td className="px-5 py-4">
-                            <p className="font-bold text-slate-800">
-                              {file.title || file.filename}
-                            </p>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      <span className="inline-block px-2 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase">
+                        {file.type || file.mimetype || "FILE"}
+                      </span>
+                      {file.sourceType === "EXTERNAL_LINK" ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-sky-100 text-sky-700 text-[10px] font-bold uppercase">
+                          <Link2 className="h-3 w-3" /> External
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase">
+                          <FileText className="h-3 w-3" /> Uploaded
+                        </span>
+                      )}
+                      {file.courseCode && (
+                        <span className="inline-block px-2 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase">
+                          {file.courseCode}
+                        </span>
+                      )}
+                    </div>
 
-                            <p className="text-xs text-slate-500 mt-1">
-                              {file.sourceType === "EXTERNAL_LINK"
-                                ? file.externalDomain || file.externalUrl
-                                : file.filename}
-                            </p>
+                    <div className="mt-3 flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-slate-700 truncate">
+                          {file.uploaderName || file.user?.fullName || "Unknown"}
+                        </p>
+                        <p className="text-[11px] text-slate-500 truncate">
+                          {file.user?.username ? `${file.user.username} · ` : ""}
+                          {file.downloads ?? 0} download{file.downloads === 1 ? "" : "s"}
+                        </p>
+                      </div>
 
-                            <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                              <span className="inline-block px-2 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase">
-                                {file.type || file.mimetype || "FILE"}
-                              </span>
-                              {file.sourceType === "EXTERNAL_LINK" ? (
-                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-sky-100 text-sky-700 text-[10px] font-bold uppercase">
-                                  <Link2 className="h-3 w-3" /> External
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase">
-                                  <FileText className="h-3 w-3" /> Uploaded
-                                </span>
-                              )}
-                            </div>
-                          </td>
-
-                          <td className="px-5 py-4 text-slate-600">
-                            {file.courseCode || "—"}
-                          </td>
-
-                          <td className="px-5 py-4">
-                            <p className="font-semibold text-slate-700">
-                              {file.uploaderName ||
-                                file.user?.fullName ||
-                                "Unknown"}
-                            </p>
-
-                            <p className="text-xs text-slate-500">
-                              {file.user?.username || ""}
-                            </p>
-                          </td>
-
-                          <td className="px-5 py-4">
-                            <FileCopyrightBadge status={file.copyrightStatus} />
-                          </td>
-
-                          <td className="px-5 py-4 text-slate-600">
-                            {file.downloads ?? 0}
-                          </td>
-
-                          <td className="px-5 py-4 text-right">
-                            <button
-                              onClick={() => deleteFile(file)}
-                              disabled={Boolean(actionLoading)}
-                              className="px-3 py-2 rounded-lg bg-red-50 text-red-700 font-bold hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {actionLoading === `delete-file-${file.id}`
-                                ? "Deleting..."
-                                : "Delete"}
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                      <button
+                        onClick={() => deleteFile(file)}
+                        disabled={Boolean(actionLoading)}
+                        className="shrink-0 px-3 py-2 rounded-lg bg-red-50 text-red-700 font-bold text-sm hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {actionLoading === `delete-file-${file.id}`
+                          ? "Deleting..."
+                          : "Delete"}
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </section>
         )}
 
@@ -893,32 +829,28 @@ function AdminNavButton({ active, icon, title, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`text-left p-4 rounded-2xl border transition ${
+      className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-bold transition ${
         active
-          ? "bg-brand-blue text-white border-brand-blue shadow-md"
-          : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+          ? "border-brand-blue bg-brand-blue text-white shadow-sm"
+          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
       }`}
     >
-      <div
-        className={`mb-2 flex h-9 w-9 items-center justify-center rounded-xl ${
-          active ? "bg-white/15 text-white" : "bg-slate-100 text-slate-500"
-        }`}
-      >
-        <Icon name={icon} className="h-5 w-5" />
-      </div>
-      <div className="font-black text-sm">{title}</div>
+      <Icon name={icon} className="h-4 w-4" />
+      {title}
     </button>
   );
 }
 
 function StatCard({ icon, title, value }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5">
-      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/10 text-brand-blue">
+    <div className="bg-white border border-slate-200 rounded-2xl p-4">
+      <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue/10 text-brand-blue">
         <Icon name={icon} className="h-5 w-5" />
       </div>
-      <p className="text-sm font-semibold text-slate-500">{title}</p>
-      <p className="text-3xl font-black text-slate-800 mt-1">{value}</p>
+      <p className="text-xs font-semibold text-slate-500">{title}</p>
+      <p className="text-2xl font-black text-slate-800 mt-1">
+        {value === null || value === undefined ? "—" : value}
+      </p>
     </div>
   );
 }
@@ -1125,15 +1057,10 @@ function ApiEndpoint({ method, path }) {
   );
 }
 
-function EmptyRow({ colSpan, text }) {
+function EmptyState({ text }) {
   return (
-    <tr>
-      <td
-        colSpan={colSpan}
-        className="px-5 py-10 text-center text-slate-500"
-      >
-        {text}
-      </td>
-    </tr>
+    <div className="bg-white border border-slate-200 rounded-2xl px-5 py-10 text-center text-slate-500">
+      {text}
+    </div>
   );
 }

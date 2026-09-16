@@ -7,7 +7,6 @@ export default function SettingsAccount() {
     settings,
     setSettings,
     profilePictureUrl,
-    loadProfilePicture,
     showMessage,
     showError,
     saving,
@@ -47,7 +46,6 @@ export default function SettingsAccount() {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setSettings(response.data);
-      await loadProfilePicture();
       window.dispatchEvent(new Event("study2gate-profile-picture-updated"));
       showMessage("Profile picture updated.");
     } catch (err) {

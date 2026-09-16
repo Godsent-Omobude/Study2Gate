@@ -12,14 +12,23 @@ import {
   updateNotificationPreferences,
 } from "../api/pushNotifications";
 
-const CATEGORIES = [
-  { key: "notifyCircleMessages", label: "Study Circle messages", description: "New messages in your Study Circles when you're not actively viewing them." },
-  { key: "notifyCircleInvitations", label: "Study Circle invitations", description: "When someone invites you to join a Study Circle." },
-  { key: "notifyMentions", label: "Mentions", description: "When someone mentions you directly." },
-  { key: "notifyCircleActivity", label: "Study Circle activity", description: "Join requests, approvals, new sessions and membership changes." },
-  { key: "notifyFlashcardActivity", label: "Flashcard activity", description: "Updates about your flashcard sets." },
-  { key: "notifyAccountSecurity", label: "Account & security", description: "Important alerts about your account." },
-  { key: "notifyAnnouncements", label: "General Study2Gate announcements", description: "Occasional platform news and updates." },
+const CATEGORIES = {
+  notifyCircleMessages: { label: "Messages", description: "New messages in your Study Circles when you're not actively viewing them." },
+  notifyCircleInvitations: { label: "Invitations", description: "When someone invites you to join a Study Circle." },
+  notifyMentions: { label: "Mentions", description: "When someone mentions you directly." },
+  notifyCircleActivity: { label: "Activity", description: "Join requests, approvals, new sessions and membership changes." },
+  notifyFlashcardActivity: { label: "Flashcard activity", description: "Updates about your flashcard sets." },
+  notifyAccountSecurity: { label: "Account and security", description: "Important alerts about your account." },
+  notifyAnnouncements: { label: "Announcements", description: "Occasional platform news and updates." },
+};
+
+const GROUPS = [
+  {
+    title: "Study circles",
+    keys: ["notifyCircleMessages", "notifyCircleInvitations", "notifyMentions", "notifyCircleActivity"],
+  },
+  { title: "Flashcards", keys: ["notifyFlashcardActivity"] },
+  { title: "Account and general", keys: ["notifyAccountSecurity", "notifyAnnouncements"] },
 ];
 
 const STATUS_COPY = {
@@ -28,6 +37,28 @@ const STATUS_COPY = {
   "not-requested": { label: "Disabled", tone: "text-slate-600 bg-slate-100" },
   granted: { label: "Enabled", tone: "text-emerald-700 bg-emerald-100" },
 };
+
+function Toggle({ checked, onChange, label, disabled }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
+      className={`relative h-5 w-9 shrink-0 rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+        checked ? "bg-[var(--accent)]" : "bg-slate-200"
+      }`}
+    >
+      <span
+        className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${
+          checked ? "translate-x-[18px]" : "translate-x-0.5"
+        }`}
+      />
+    </button>
+  );
+}
 
 export default function PushNotificationSettings() {
   const [permission, setPermission] = useState(() => getPermissionState());
@@ -172,26 +203,42 @@ export default function PushNotificationSettings() {
       </div>
 
       {preferences && (
-        <div className="mt-5 space-y-2">
+        <div className="mt-5">
           <p className="text-sm font-bold text-slate-700">Notify me about</p>
-          {CATEGORIES.map((category) => (
-            <label
-              key={category.key}
-              className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl bg-slate-50 p-4"
-            >
-              <div>
-                <p className="font-bold text-slate-800">{category.label}</p>
-                <p className="mt-1 text-xs text-slate-500">{category.description}</p>
+          {!enabledOnThisDevice && (
+            <p className="mt-1 text-xs text-slate-400">
+              Enable browser notifications above to turn these on.
+            </p>
+          )}
+
+          {GROUPS.map((group) => (
+            <div key={group.title} className="mt-4">
+              <p className="mb-2 ml-1 text-xs font-bold uppercase tracking-wide text-slate-400">
+                {group.title}
+              </p>
+              <div className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200">
+                {group.keys.map((key) => {
+                  const category = CATEGORIES[key];
+                  return (
+                    <div key={key} className="flex items-center gap-4 px-4 py-3.5">
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-slate-800">{category.label}</p>
+                        <p className="mt-0.5 text-xs text-slate-500">{category.description}</p>
+                      </div>
+                      <Toggle
+                        checked={Boolean(preferences[key])}
+                        onChange={(value) => toggleCategory(key, value)}
+                        label={category.label}
+                        disabled={!enabledOnThisDevice}
+                      />
+                    </div>
+                  );
+                })}
               </div>
-              <input
-                type="checkbox"
-                checked={Boolean(preferences[category.key])}
-                onChange={(e) => toggleCategory(category.key, e.target.checked)}
-                className="h-5 w-5 shrink-0 accent-[var(--accent)]"
-              />
-            </label>
+            </div>
           ))}
-          <p className="pt-1 text-xs text-slate-400">
+
+          <p className="pt-3 text-xs text-slate-400">
             These control which notifications can be sent as browser push. Turning a category off doesn't
             affect your in-app notification bell.
           </p>

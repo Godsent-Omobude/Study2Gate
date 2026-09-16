@@ -13,6 +13,7 @@ import {
 import api from "../api/api";
 import ReportModal from "../components/ReportModal";
 import OutOfCreditsModal from "../components/OutOfCreditsModal";
+import useProfilePicture from "../hooks/useProfilePicture";
 import { broadcastDownloadCredits, readDownloadErrorPayload } from "../utils/downloadCredits";
 
 const isValidHttpsUrl = (value) => {
@@ -56,7 +57,7 @@ export default function Dashboard() {
   const [showOutOfCredits, setShowOutOfCredits] = useState(false);
 
   const userName = localStorage.getItem("fullName") || "Student";
-  const [profilePictureUrl, setProfilePictureUrl] = useState("");
+  const profilePictureUrl = useProfilePicture();
   const location = useLocation();
 
   // Lets the "Upload Document" button in OutOfCreditsModal (and the
@@ -67,26 +68,6 @@ export default function Dashboard() {
       document.getElementById("upload-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [location.hash]);
-
-  useEffect(() => {
-    let objectUrl = "";
-    const loadPicture = async () => {
-      try {
-        if (!localStorage.getItem("profilePicture")) return;
-        const response = await api.get("/settings/profile-picture", {
-          responseType: "blob",
-        });
-        objectUrl = URL.createObjectURL(response.data);
-        setProfilePictureUrl(objectUrl);
-      } catch {
-        setProfilePictureUrl("");
-      }
-    };
-    loadPicture();
-    return () => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, []);
 
   const nameParts = userName.trim().split(/\s+/);
   const firstName = nameParts[0] || "Student";
