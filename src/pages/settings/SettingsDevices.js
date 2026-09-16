@@ -37,7 +37,6 @@ export default function SettingsDevices() {
       }
     };
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRemove = async (device) => {
