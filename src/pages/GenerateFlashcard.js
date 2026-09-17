@@ -194,7 +194,7 @@ export default function GenerateFlashcards() {
     <main className="min-h-[calc(100vh-5rem)] bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6">
-          <p className="text-sm font-bold text-violet-600">AI STUDY TOOL</p>
+          <p className="text-sm font-bold text-accent">AI STUDY TOOL</p>
           <h1 className="mt-1 text-3xl font-black text-slate-900">
             AI Flashcards
           </h1>
@@ -202,7 +202,7 @@ export default function GenerateFlashcards() {
             Upload your study material and let AI turn it into revision cards.
           </p>
           {circleId && (
-            <div className="mt-3 inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-bold text-violet-700">
+            <div className="mt-3 inline-flex items-center gap-2 rounded-xl border border-accent-soft bg-accent-soft px-3 py-2 text-xs font-bold text-accent-hover">
               <Users className="h-3.5 w-3.5" /> Generating for {circleName || "your Study Circle"} — this set
               will be shared with the whole circle.
             </div>
@@ -225,8 +225,8 @@ export default function GenerateFlashcards() {
                 <label className="text-sm font-bold text-slate-700">
                   1. Upload Document
                 </label>
-                <label className="mt-2 flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-violet-300 bg-violet-50/40 px-5 text-center transition hover:bg-violet-50">
-                  <Upload className="h-10 w-10 text-violet-600" strokeWidth={1.75} />
+                <label className="mt-2 flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-accent-soft bg-accent-soft/40 px-5 text-center transition hover:bg-accent-soft">
+                  <Upload className="h-10 w-10 text-accent" strokeWidth={1.75} />
                   <span className="mt-2 font-bold text-slate-800">
                     {document ? document.name : "Click to browse for a document"}
                   </span>
@@ -274,7 +274,7 @@ export default function GenerateFlashcards() {
                         disabled={pdfInfoLoading || !totalPages}
                         value={startPage}
                         onChange={(e) => handleStartPageChange(e.target.value)}
-                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100 disabled:bg-slate-100 disabled:text-slate-400"
+                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-accent-soft0 focus:ring-4 focus:ring-accent-soft disabled:bg-slate-100 disabled:text-slate-400"
                       />
                     </div>
                     <div>
@@ -292,7 +292,7 @@ export default function GenerateFlashcards() {
                         disabled={pdfInfoLoading || !totalPages}
                         value={endPage}
                         onChange={(e) => handleEndPageChange(e.target.value)}
-                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100 disabled:bg-slate-100 disabled:text-slate-400"
+                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-accent-soft0 focus:ring-4 focus:ring-accent-soft disabled:bg-slate-100 disabled:text-slate-400"
                       />
                     </div>
                   </div>
@@ -313,7 +313,7 @@ export default function GenerateFlashcards() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Biochemistry Week 1"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-accent-soft0 focus:ring-4 focus:ring-accent-soft"
                 />
               </div>
 
@@ -325,7 +325,7 @@ export default function GenerateFlashcards() {
                   <select
                     value={count}
                     onChange={(e) => setCount(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-500"
+                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent-soft0"
                   >
                     {[5, 10, 20, 30, 50, 75, 100].map((value) => (
                       <option key={value} value={value}>
@@ -342,7 +342,7 @@ export default function GenerateFlashcards() {
                   <select
                     value={difficulty}
                     onChange={(e) => setDifficulty(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-500"
+                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent-soft0"
                   >
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
@@ -378,7 +378,7 @@ export default function GenerateFlashcards() {
                   pdfInfoLoading ||
                   (isPdf && (!totalPages || !!rangeError))
                 }
-                className="w-full rounded-xl bg-violet-600 px-5 py-3.5 text-sm font-black text-white shadow-lg shadow-violet-200 transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full rounded-xl bg-accent px-5 py-3.5 text-sm font-black text-white shadow-lg shadow-accent-soft transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading
                   ? "Generating..."
@@ -395,8 +395,8 @@ export default function GenerateFlashcards() {
 
           <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
             <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-1">
-              <div className="rounded-2xl bg-violet-50 p-5">
-                <FileText className="h-7 w-7 text-violet-700" />
+              <div className="rounded-2xl bg-accent-soft p-5">
+                <FileText className="h-7 w-7 text-accent-hover" />
                 <h3 className="mt-3 font-black text-slate-900">
                   Upload
                 </h3>
@@ -415,8 +415,8 @@ export default function GenerateFlashcards() {
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-blue-50 p-5">
-                <FileText className="h-7 w-7 text-blue-700" />
+              <div className="rounded-2xl bg-accent-soft p-5">
+                <FileText className="h-7 w-7 text-accent-hover" />
                 <h3 className="mt-3 font-black text-slate-900">
                   Study & Learn
                 </h3>

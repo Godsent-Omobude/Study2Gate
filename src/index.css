@@ -7,191 +7,64 @@ body {
 }
 
 
-/* Study2Gate v1 global appearance system */
+/* Study2Gate v1 global appearance system.
+   Two representations of the same color are kept side by side, at
+   essentially zero extra cost (a handful of extra CSS custom-property
+   declarations): the plain hex vars (--accent, --accent-soft,
+   --accent-hover) for inline styles and anywhere a plain CSS color value
+   is needed, and the RGB-channel vars (--accent-rgb etc.) specifically so
+   Tailwind's `rgb(var(--x) / <alpha-value>)` color functions — see
+   tailwind.config.js — can apply opacity modifiers like `bg-accent/40`
+   natively, which a plain var(--accent) string can't support. Every
+   accent-colored element in the app should use the `accent` /
+   `accent-soft` / `accent-hover` Tailwind classes directly (e.g.
+   `bg-accent`, `text-accent`, `border-accent-soft`) or these variables —
+   never a fixed color name — so there is nothing left to override here. */
 :root {
   --accent: #1464d2;
   --accent-soft: #e8f1ff;
   --accent-hover: #0d55b8;
+  --accent-rgb: 20 100 210;
+  --accent-soft-rgb: 232 241 255;
+  --accent-hover-rgb: 13 85 184;
   --page-bg: #f8fafc;
   --surface: #ffffff;
   --text-main: #0f172a;
   --text-muted: #64748b;
   --border: #e2e8f0;
-
-  --accent-50: color-mix(in srgb, var(--accent) 6%, white);
-  --accent-100: var(--accent-soft);
-  --accent-200: color-mix(in srgb, var(--accent) 25%, white);
-  --accent-300: color-mix(in srgb, var(--accent) 40%, white);
-  --accent-400: color-mix(in srgb, var(--accent) 65%, white);
-  --accent-500: color-mix(in srgb, var(--accent) 85%, white);
-  --accent-600: var(--accent);
-  --accent-700: var(--accent-hover);
-  --accent-900: color-mix(in srgb, var(--accent) 65%, black);
 }
 
 html[data-accent="red"] {
   --accent: #dc2626;
   --accent-soft: #fee2e2;
   --accent-hover: #b91c1c;
+  --accent-rgb: 220 38 38;
+  --accent-soft-rgb: 254 226 226;
+  --accent-hover-rgb: 185 28 28;
 }
 html[data-accent="purple"] {
   --accent: #7c3aed;
   --accent-soft: #ede9fe;
   --accent-hover: #6d28d9;
+  --accent-rgb: 124 58 237;
+  --accent-soft-rgb: 237 233 254;
+  --accent-hover-rgb: 109 40 217;
 }
 html[data-accent="green"] {
   --accent: #16a34a;
   --accent-soft: #dcfce7;
   --accent-hover: #15803d;
+  --accent-rgb: 22 163 74;
+  --accent-soft-rgb: 220 252 231;
+  --accent-hover-rgb: 21 128 61;
 }
 html[data-accent="yellow"] {
   --accent: #ca8a04;
   --accent-soft: #fef9c3;
   --accent-hover: #a16207;
-}
-
-html[data-accent] .bg-violet-600:not(.logo-mark),
-html[data-accent] .bg-blue-600:not(.logo-mark),
-html[data-accent] .bg-brand-accent:not(.logo-mark),
-html[data-accent] .bg-brand-blue:not(.logo-mark),
-html[data-accent] .bg-\[\#1464d2\]:not(.logo-mark),
-html[data-accent] .bg-\[\#635bff\]:not(.logo-mark) {
-  background-color: var(--accent) !important;
-}
-html[data-accent] .text-violet-600:not(.logo-mark),
-html[data-accent] .text-violet-400:not(.logo-mark),
-html[data-accent] .text-violet-500:not(.logo-mark),
-html[data-accent] .text-violet-700:not(.logo-mark),
-html[data-accent] .text-blue-600:not(.logo-mark),
-html[data-accent] .text-blue-700:not(.logo-mark),
-html[data-accent] .text-purple-700:not(.logo-mark),
-html[data-accent] .text-brand-blue:not(.logo-mark),
-html[data-accent] .text-\[\#635bff\]:not(.logo-mark) {
-  color: var(--accent) !important;
-}
-html[data-accent] .group:hover .group-hover\:text-violet-600:not(.logo-mark) {
-  color: var(--accent) !important;
-}
-html[data-accent] .border-violet-500:not(.logo-mark),
-html[data-accent] .border-violet-600:not(.logo-mark),
-html[data-accent] .border-blue-500:not(.logo-mark),
-html[data-accent] .border-brand-blue:not(.logo-mark) {
-  border-color: var(--accent) !important;
-}
-html[data-accent] .ring-brand-blue:not(.logo-mark),
-html[data-accent] .focus\:ring-brand-blue:focus:not(.logo-mark) {
-  --tw-ring-color: var(--accent) !important;
-}
-/* Any gradient utility classes tied to the accent color are flattened to a
-   single pure/solid fill instead of blending — from/via/to gradients render
-   as one flat accent color everywhere in the app, matching the Settings
-   accent color choice, per explicit preference: no color blending. */
-html[data-accent] .to-violet-600:not(.logo-mark),
-html[data-accent] .to-blue-700:not(.logo-mark),
-html[data-accent] .to-\[\#635bff\]:not(.logo-mark),
-html[data-accent] .from-violet-600:not(.logo-mark),
-html[data-accent] .via-\[\#4b46d1\]:not(.logo-mark),
-html[data-accent] .via-\[\#2f2a8f\]:not(.logo-mark) {
-  background-image: none !important;
-  background-color: var(--accent) !important;
-}
-html[data-accent] .hover\:bg-\[\#5148e8\]:hover:not(.logo-mark) {
-  background-color: var(--accent-hover) !important;
-}
-
-html[data-accent] .hover\:bg-violet-700:hover:not(.logo-mark),
-html[data-accent] .hover\:bg-blue-700:hover:not(.logo-mark),
-html[data-accent] .hover\:bg-\[\#0d55b8\]:hover:not(.logo-mark) {
-  background-color: var(--accent-hover) !important;
-}
-html[data-accent] .hover\:text-brand-blue:hover:not(.logo-mark) {
-  color: var(--accent-hover) !important;
-}
-
-/* -- soft background / "50"-"100" -- */
-html[data-accent] .bg-violet-50:not(.logo-mark),
-html[data-accent] .bg-blue-50:not(.logo-mark),
-html[data-accent] .bg-violet-100:not(.logo-mark),
-html[data-accent] .bg-purple-50:not(.logo-mark),
-html[data-accent] .bg-purple-100:not(.logo-mark) {
-  background-color: var(--accent-soft) !important;
-}
-/* Same soft tint, but with Tailwind's opacity-modifier suffix (bg-violet-50/NN)
-   used for translucent info-card/highlight backgrounds. */
-html[data-accent] .bg-violet-50\/40:not(.logo-mark),
-html[data-accent] .bg-violet-50\/50:not(.logo-mark),
-html[data-accent] .bg-violet-50\/60:not(.logo-mark) {
-  background-color: color-mix(in srgb, var(--accent-soft) 65%, transparent) !important;
-}
-/* Loading-spinner top-border accent (border-t-violet-700). */
-html[data-accent] .border-t-violet-700:not(.logo-mark) {
-  border-top-color: var(--accent-hover) !important;
-}
-html[data-accent] .hover\:bg-violet-50:hover:not(.logo-mark),
-html[data-accent] .hover\:bg-blue-50:hover:not(.logo-mark),
-html[data-accent] .hover\:bg-violet-100:hover:not(.logo-mark),
-html[data-accent] .hover\:bg-purple-100:hover:not(.logo-mark) {
-  background-color: var(--accent-soft) !important;
-}
-html[data-accent] .from-violet-50:not(.logo-mark) {
-  background-image: none !important;
-  background-color: var(--accent-soft) !important;
-}
-
-/* -- borders / rings, lighter shades -- */
-html[data-accent] .border-blue-200:not(.logo-mark),
-html[data-accent] .border-violet-200:not(.logo-mark) {
-  border-color: var(--accent-200) !important;
-}
-html[data-accent] .hover\:border-blue-200:hover:not(.logo-mark) {
-  border-color: var(--accent-200) !important;
-}
-html[data-accent] .border-violet-100:not(.logo-mark) {
-  border-color: var(--accent-100) !important;
-}
-html[data-accent] .border-violet-300:not(.logo-mark) {
-  border-color: var(--accent-300) !important;
-}
-html[data-accent] .focus\:border-violet-500:focus:not(.logo-mark),
-html[data-accent] .focus\:border-blue-500:focus:not(.logo-mark) {
-  border-color: var(--accent) !important;
-}
-html[data-accent] .ring-violet-100:not(.logo-mark),
-html[data-accent] .ring-blue-100:not(.logo-mark),
-html[data-accent] .ring-violet-200:not(.logo-mark),
-html[data-accent] .ring-blue-50:not(.logo-mark) {
-  --tw-ring-color: var(--accent-soft) !important;
-}
-html[data-accent] .focus\:ring-violet-100:focus:not(.logo-mark),
-html[data-accent] .focus\:ring-blue-100:focus:not(.logo-mark) {
-  --tw-ring-color: var(--accent-soft) !important;
-}
-
-/* -- shadow tints (Tailwind's shadow-{color} sets --tw-shadow-color) -- */
-html[data-accent] .shadow-violet-100:not(.logo-mark),
-html[data-accent] .shadow-violet-200:not(.logo-mark),
-html[data-accent] .shadow-blue-100:not(.logo-mark),
-html[data-accent] .shadow-blue-200:not(.logo-mark) {
-  --tw-shadow-color: var(--accent-soft) !important;
-}
-
-/* -- lighter tinted text (badges, labels, hero-panel copy on dark bg) -- */
-html[data-accent] .text-violet-100:not(.logo-mark),
-html[data-accent] .text-blue-100:not(.logo-mark),
-html[data-accent] .text-blue-50:not(.logo-mark) {
-  color: var(--accent-100) !important;
-}
-html[data-accent] .text-violet-200:not(.logo-mark),
-html[data-accent] .text-blue-200:not(.logo-mark),
-html[data-accent] .text-blue-300:not(.logo-mark) {
-  color: var(--accent-200) !important;
-}
-html[data-accent] .text-violet-900:not(.logo-mark) {
-  color: var(--accent-900) !important;
-}
-html[data-accent] .to-violet-400:not(.logo-mark) {
-  background-image: none !important;
-  background-color: var(--accent) !important;
+  --accent-rgb: 202 138 4;
+  --accent-soft-rgb: 254 249 195;
+  --accent-hover-rgb: 161 98 7;
 }
 
 /* Theme */
@@ -311,5 +184,47 @@ html[data-theme="dark"] select {
   .equalizer-loader__bar {
     animation: none;
     transform: scaleY(0.7);
+  }
+}
+
+
+/* Mobile app-like viewport behaviour. Keep the document inside the device width
+   while allowing intentionally scrollable content (such as material cards) to
+   manage its own horizontal overflow. */
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
+.materials-file-strip {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y;
+}
+
+.materials-file-strip > article {
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  .materials-file-strip {
+    scrollbar-width: none;
+  }
+
+  .materials-file-strip::-webkit-scrollbar {
+    display: none;
   }
 }

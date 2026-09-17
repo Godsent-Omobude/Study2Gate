@@ -47,14 +47,15 @@ function Toggle({ checked, onChange, label, disabled }) {
       aria-label={label}
       disabled={disabled}
       onClick={() => onChange(!checked)}
-      className={`relative h-5 w-9 shrink-0 rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
-        checked ? "bg-[var(--accent)]" : "bg-slate-200"
-      }`}
+      className="relative h-5 w-9 shrink-0 rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+      style={{ backgroundColor: checked ? "var(--accent)" : "#e2e8f0" }}
     >
       <span
-        className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${
-          checked ? "translate-x-[18px]" : "translate-x-0.5"
-        }`}
+        className="absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform"
+        style={{
+          left: "2px",
+          transform: checked ? "translateX(18px)" : "translateX(0)",
+        }}
       />
     </button>
   );

@@ -42,7 +42,7 @@ export default function OutOfCreditsModal({ open, onClose }) {
           <button
             type="button"
             onClick={goToUpload}
-            className="w-full rounded-xl bg-violet-600 py-3 text-sm font-black text-white shadow-lg shadow-violet-100 hover:bg-violet-700"
+            className="w-full rounded-xl bg-accent py-3 text-sm font-black text-white shadow-lg shadow-accent-soft hover:bg-accent-hover"
           >
             Upload Document
           </button>

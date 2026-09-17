@@ -10,7 +10,7 @@ export default function FlashcardSetCard({ set, onDelete }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
       <div className="flex items-start gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-hover">
           <FileText className="h-6 w-6" />
         </div>
 
@@ -37,7 +37,7 @@ export default function FlashcardSetCard({ set, onDelete }) {
       <div className="mt-4 flex justify-end">
         <Link
           to={`/my-flashcards/${set.id}`}
-          className="inline-flex items-center gap-1 rounded-xl border border-violet-200 px-4 py-2 text-xs font-bold text-violet-700 transition hover:bg-violet-50"
+          className="inline-flex items-center gap-1 rounded-xl border border-accent-soft px-4 py-2 text-xs font-bold text-accent-hover transition hover:bg-accent-soft"
         >
           Study <ArrowRight className="h-3.5 w-3.5" />
         </Link>

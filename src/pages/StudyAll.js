@@ -7,7 +7,7 @@ const RATINGS = [
   { key: "again", label: "Again", hint: "< 1 min", className: "bg-red-50 text-red-700 hover:bg-red-100 border-red-200" },
   { key: "hard", label: "Hard", hint: "shorter gap", className: "bg-amber-50 text-amber-700 hover:bg-amber-100 border-amber-200" },
   { key: "good", label: "Good", hint: "on schedule", className: "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200" },
-  { key: "easy", label: "Easy", hint: "longer gap", className: "bg-violet-50 text-violet-700 hover:bg-violet-100 border-violet-200" },
+  { key: "easy", label: "Easy", hint: "longer gap", className: "bg-accent-soft text-accent-hover hover:bg-accent-soft border-accent-soft" },
 ];
 
 export default function StudyAll() {
@@ -131,13 +131,13 @@ export default function StudyAll() {
   return (
     <main className="min-h-[calc(100vh-5rem)] bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
-        <Link to="/my-flashcards" className="inline-flex items-center gap-1 text-xs font-bold text-violet-600">
+        <Link to="/my-flashcards" className="inline-flex items-center gap-1 text-xs font-bold text-accent">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to My Flashcards
         </Link>
 
         <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-bold text-violet-600">SPACED REPETITION</p>
+            <p className="text-sm font-bold text-accent">SPACED REPETITION</p>
             <h1 className="mt-1 text-3xl font-black text-slate-900">Study All</h1>
             <p className="mt-1 text-sm text-slate-500">
               Every flashcard you've generated, shuffled fresh each time — never the same
@@ -150,7 +150,7 @@ export default function StudyAll() {
             onClick={toggleDueOnly}
             className={`inline-flex items-center gap-1.5 rounded-xl border px-4 py-3 text-sm font-bold transition ${
               dueOnly
-                ? "border-violet-600 bg-violet-600 text-white"
+                ? "border-accent bg-accent text-white"
                 : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
             }`}
           >
@@ -178,7 +178,7 @@ export default function StudyAll() {
           </div>
         ) : emptyState ? (
           <section className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-soft text-accent">
               <FileText className="h-8 w-8" />
             </div>
             <h2 className="mt-5 text-xl font-black text-slate-900">{emptyState.title}</h2>
@@ -186,7 +186,7 @@ export default function StudyAll() {
             {!dueOnly && (
               <Link
                 to="/generate-flashcards"
-                className="mt-5 inline-flex rounded-xl bg-violet-600 px-5 py-3 text-sm font-bold text-white hover:bg-violet-700"
+                className="mt-5 inline-flex rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white hover:bg-accent-hover"
               >
                 Generate Flashcards
               </Link>
@@ -204,7 +204,7 @@ export default function StudyAll() {
               <button
                 type="button"
                 onClick={() => load(dueOnly)}
-                className="rounded-xl bg-violet-600 px-5 py-3 text-sm font-black text-white hover:bg-violet-700"
+                className="rounded-xl bg-accent px-5 py-3 text-sm font-black text-white hover:bg-accent-hover"
               >
                 Study Again (new shuffle)
               </button>
@@ -225,7 +225,7 @@ export default function StudyAll() {
 
             <div className="mb-5 h-2 overflow-hidden rounded-full bg-slate-100">
               <div
-                className="h-full rounded-full bg-violet-600 transition-all duration-300"
+                className="h-full rounded-full bg-accent transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -243,7 +243,7 @@ export default function StudyAll() {
               }}
             >
               <div className="mb-6 flex items-center justify-between gap-3">
-                <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-violet-700">
+                <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-wide text-accent-hover">
                   Question
                 </span>
                 {!revealed && (
@@ -260,8 +260,8 @@ export default function StudyAll() {
               </div>
 
               {revealed && (
-                <div className="mt-6 rounded-2xl border border-violet-200 bg-violet-50 p-5 text-center">
-                  <p className="text-xs font-black uppercase tracking-wide text-violet-700">
+                <div className="mt-6 rounded-2xl border border-accent-soft bg-accent-soft p-5 text-center">
+                  <p className="text-xs font-black uppercase tracking-wide text-accent-hover">
                     Answer
                   </p>
                   <p className="mt-2 text-sm leading-7 text-slate-800">{currentCard.back}</p>

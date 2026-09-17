@@ -45,7 +45,7 @@ export default function EnableNotificationsPrompt({ open, onDone }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent">
           <Bell className="h-6 w-6" />
         </div>
 
@@ -64,7 +64,7 @@ export default function EnableNotificationsPrompt({ open, onDone }) {
                 type="button"
                 onClick={handleEnable}
                 disabled={phase === "busy"}
-                className="w-full rounded-xl bg-violet-600 py-3 text-sm font-black text-white shadow-lg shadow-violet-100 hover:bg-violet-700 disabled:opacity-60"
+                className="w-full rounded-xl bg-accent py-3 text-sm font-black text-white shadow-lg shadow-accent-soft hover:bg-accent-hover disabled:opacity-60"
               >
                 {phase === "busy" ? "Requesting..." : "Enable Notifications"}
               </button>
@@ -84,7 +84,7 @@ export default function EnableNotificationsPrompt({ open, onDone }) {
             <button
               type="button"
               onClick={onDone}
-              className="mt-6 w-full rounded-xl bg-violet-600 py-3 text-sm font-black text-white shadow-lg shadow-violet-100 hover:bg-violet-700"
+              className="mt-6 w-full rounded-xl bg-accent py-3 text-sm font-black text-white shadow-lg shadow-accent-soft hover:bg-accent-hover"
             >
               Continue to Study2Gate
             </button>

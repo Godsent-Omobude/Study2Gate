@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { RotateCcw, ArrowLeft, FileText } from "lucide-react";
+import { RotateCcw, ArrowLeft } from "lucide-react";
+import { FlashcardsIcon } from "../components/icons/AdminIcons";
 import api from "../api/api";
 import FlashcardList from "../components/FlashcardList";
 import FlashcardSetCard from "../components/FlashcardSetCard";
@@ -93,7 +94,7 @@ export default function MyFlashcards() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-bold text-violet-600">LIBRARY</p>
+            <p className="text-sm font-bold text-accent">LIBRARY</p>
             <h1 className="mt-1 text-3xl font-black text-slate-900">
               My Flashcards
             </h1>
@@ -106,14 +107,14 @@ export default function MyFlashcards() {
             {sets.length > 0 && (
               <Link
                 to="/my-flashcards/study-all"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-violet-200 bg-white px-4 py-3 text-sm font-bold text-violet-700 shadow-sm hover:bg-violet-50"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-accent-soft bg-white px-4 py-3 text-sm font-bold text-accent-hover shadow-sm hover:bg-accent-soft"
               >
                 <RotateCcw className="h-4 w-4" /> Study All (Spaced Repetition)
               </Link>
             )}
             <Link
               to="/generate-flashcards"
-              className="rounded-xl bg-violet-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-violet-200 hover:bg-violet-700"
+              className="rounded-xl bg-accent px-4 py-3 text-sm font-bold text-white shadow-lg shadow-accent-soft hover:bg-accent-hover"
             >
               + Generate New Set
             </Link>
@@ -132,7 +133,7 @@ export default function MyFlashcards() {
               <div>
                 <Link
                   to="/my-flashcards"
-                  className="inline-flex items-center gap-1 text-xs font-bold text-violet-600"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-accent"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" /> Back to My Flashcards
                 </Link>
@@ -173,8 +174,11 @@ export default function MyFlashcards() {
           <>
             {sets.length === 0 ? (
               <section className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
-                  <FileText className="h-8 w-8" />
+                <div
+                  className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl"
+                  style={{ color: "var(--accent)", backgroundColor: "var(--accent-soft)" }}
+                >
+                  <FlashcardsIcon size={32} />
                 </div>
                 <h2 className="mt-5 text-xl font-black text-slate-900">
                   No saved flashcards yet
@@ -184,7 +188,7 @@ export default function MyFlashcards() {
                 </p>
                 <Link
                   to="/generate-flashcards"
-                  className="mt-5 inline-flex rounded-xl bg-violet-600 px-5 py-3 text-sm font-bold text-white hover:bg-violet-700"
+                  className="mt-5 inline-flex rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white hover:bg-accent-hover"
                 >
                   Generate Flashcards
                 </Link>

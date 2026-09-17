@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import {
   Upload,
   Download,
-  Layers,
   Flame,
   Sparkles,
   FileText,
@@ -14,6 +13,7 @@ import api from "../api/api";
 import ReportModal from "../components/ReportModal";
 import OutOfCreditsModal from "../components/OutOfCreditsModal";
 import useProfilePicture from "../hooks/useProfilePicture";
+import { FlashcardsIcon } from "../components/icons/AdminIcons";
 import { broadcastDownloadCredits, readDownloadErrorPayload } from "../utils/downloadCredits";
 
 const isValidHttpsUrl = (value) => {
@@ -335,7 +335,7 @@ export default function Dashboard() {
             {loadError}
           </div>
         )}
-        <section className="mb-6 overflow-hidden rounded-tl-[4px] rounded-tr-[28px] rounded-br-[4px] rounded-bl-[28px] bg-violet-600 p-6 text-white shadow-xl sm:p-8">
+        <section className="mb-6 overflow-hidden rounded-tl-[4px] rounded-tr-[28px] rounded-br-[4px] rounded-bl-[28px] bg-accent p-6 text-white shadow-xl sm:p-8">
           <div className="flex flex-col gap-6">
             <div>
               <div className="flex items-center gap-3">
@@ -351,7 +351,7 @@ export default function Dashboard() {
                   </div>
                 )}
                 <div className="min-w-0">
-                  <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-200">
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-accent-soft">
                     {timeGreeting.eyebrow}
                   </p>
                   <h1 className="mt-1 text-3xl font-black tracking-tight sm:text-4xl">
@@ -363,7 +363,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <p
-                className={`mt-3 max-w-2xl text-sm font-bold leading-6 text-violet-100 transition-all duration-700 ease-out sm:text-base ${
+                className={`mt-3 max-w-2xl text-sm font-bold leading-6 text-accent-soft transition-all duration-700 ease-out sm:text-base ${
                   taglineVisible
                     ? "translate-x-0 opacity-100"
                     : "-translate-x-6 opacity-0"
@@ -376,7 +376,7 @@ export default function Dashboard() {
             <div className="flex flex-wrap gap-3">
               <Link
                 to="/generate-flashcards"
-                className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-black text-violet-700 shadow-lg transition hover:bg-violet-50 active:scale-[0.98]"
+                className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-black text-accent-hover shadow-lg transition hover:bg-accent-soft active:scale-[0.98]"
               >
                 <Sparkles className="h-4 w-4" strokeWidth={2.2} aria-hidden="true" />
                 Generate Flashcards
@@ -393,7 +393,7 @@ export default function Dashboard() {
           </div>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+              <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-accent">
                 <Upload className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
               </div>
               <p className="text-2xl font-black tracking-tight text-slate-900">
@@ -402,7 +402,7 @@ export default function Dashboard() {
               <p className="mt-1 text-xs font-semibold text-slate-500">Uploads</p>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+              <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-accent">
                 <Download className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
               </div>
               <p className="text-2xl font-black tracking-tight text-slate-900">
@@ -411,8 +411,11 @@ export default function Dashboard() {
               <p className="mt-1 text-xs font-semibold text-slate-500">Downloads</p>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
-                <Layers className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
+              <div
+                className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl"
+                style={{ color: "var(--accent)", backgroundColor: "var(--accent-soft)" }}
+              >
+                <FlashcardsIcon size={18} />
               </div>
               <p className="text-2xl font-black tracking-tight text-slate-900">
                 {flashcardSetsTotal}
@@ -475,7 +478,7 @@ export default function Dashboard() {
                 onClick={() => setSourceType("UPLOAD")}
                 className={`inline-flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-bold transition ${
                   sourceType === "UPLOAD"
-                    ? "bg-white text-violet-700 shadow-sm"
+                    ? "bg-white text-accent-hover shadow-sm"
                     : "text-slate-500 hover:text-slate-700"
                 }`}
               >
@@ -486,7 +489,7 @@ export default function Dashboard() {
                 onClick={() => setSourceType("EXTERNAL_LINK")}
                 className={`inline-flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-bold transition ${
                   sourceType === "EXTERNAL_LINK"
-                    ? "bg-white text-violet-700 shadow-sm"
+                    ? "bg-white text-accent-hover shadow-sm"
                     : "text-slate-500 hover:text-slate-700"
                 }`}
               >
@@ -501,7 +504,7 @@ export default function Dashboard() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Resource title"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-500 focus:bg-white"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent-soft0 focus:bg-white"
               />
 
               <input
@@ -509,13 +512,13 @@ export default function Dashboard() {
                 value={courseCode}
                 onChange={(e) => setCourseCode(e.target.value)}
                 placeholder="Course code e.g. MBC201"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-500 focus:bg-white"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent-soft0 focus:bg-white"
               />
 
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-500 focus:bg-white"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent-soft0 focus:bg-white"
               >
                 <option value="Material">Lecture Material</option>
                 <option value="Past Question">Past Question Paper</option>
@@ -526,16 +529,16 @@ export default function Dashboard() {
                 onChange={(e) => setDescription(e.target.value)}
                 rows="3"
                 placeholder="Short description"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-500 focus:bg-white"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent-soft0 focus:bg-white"
               />
 
               {sourceType === "UPLOAD" ? (
                 <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-3 sm:p-4">
                   <label
                     htmlFor="material-file"
-                    className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 transition hover:border-violet-300 hover:bg-violet-50/40"
+                    className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 transition hover:border-accent-soft hover:bg-accent-soft/40"
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-hover">
                       <Upload className="h-5 w-5" aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">
@@ -548,7 +551,7 @@ export default function Dashboard() {
                           : "PDF, DOCX, PPTX or image • Maximum 25 MB"}
                       </span>
                     </span>
-                    <span className="shrink-0 rounded-lg bg-violet-50 px-3 py-2 text-xs font-black text-violet-700">
+                    <span className="shrink-0 rounded-lg bg-accent-soft px-3 py-2 text-xs font-black text-accent-hover">
                       Browse
                     </span>
                   </label>
@@ -573,7 +576,7 @@ export default function Dashboard() {
                       value={externalUrl}
                       onChange={(e) => setExternalUrl(e.target.value)}
                       placeholder="https://example.edu.ng/resource.pdf"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm outline-none focus:border-violet-500 focus:bg-white"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm outline-none focus:border-accent-soft0 focus:bg-white"
                     />
                   </div>
                   <p className="mt-1.5 text-[11px] text-slate-400">
@@ -587,7 +590,7 @@ export default function Dashboard() {
                   type="checkbox"
                   checked={copyrightConfirmed}
                   onChange={(e) => setCopyrightConfirmed(e.target.checked)}
-                  className="mt-1 h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+                  className="mt-1 h-4 w-4 rounded border-slate-300 text-accent focus:ring-accent-soft0"
                 />
                 <span className="text-xs leading-5 text-slate-600">
                   {sourceType === "UPLOAD" ? (
@@ -614,7 +617,7 @@ export default function Dashboard() {
               <button
                 type="submit"
                 disabled={!copyrightConfirmed || isUploading}
-                className="w-full rounded-xl bg-violet-600 py-3 text-sm font-black text-white shadow-lg shadow-violet-100 hover:bg-violet-700 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded-xl bg-accent py-3 text-sm font-black text-white shadow-lg shadow-accent-soft hover:bg-accent-hover disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isUploading && (
                   <span
@@ -701,7 +704,7 @@ export default function Dashboard() {
               placeholder="Search title or course code..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-500 lg:max-w-sm"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent-soft0 lg:max-w-sm"
             />
           </div>
 
@@ -712,7 +715,7 @@ export default function Dashboard() {
                 onClick={() => setFilterType(value)}
                 className={`rounded-lg px-3 py-2 text-xs font-bold ${
                   filterType === value
-                    ? "bg-violet-600 text-white"
+                    ? "bg-accent text-white"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
@@ -755,7 +758,7 @@ export default function Dashboard() {
                     className="w-[86vw] min-w-[86vw] shrink-0 snap-start rounded-2xl border border-slate-200 bg-white p-4 transition hover:shadow-md sm:w-[70vw] sm:min-w-[70vw] md:w-auto md:min-w-0 md:p-5"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <span className="rounded-md bg-violet-50 px-2.5 py-1 text-[10px] font-black uppercase text-violet-700">
+                      <span className="rounded-md bg-accent-soft px-2.5 py-1 text-[10px] font-black uppercase text-accent-hover">
                         {file.type || "Material"}
                       </span>
                       {file.courseCode && (
@@ -821,12 +824,12 @@ export default function Dashboard() {
                             className={`inline-flex min-w-[108px] items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition ${
                               downloadedId === fileId
                                 ? "bg-emerald-50 text-emerald-700"
-                                : "bg-violet-50 text-violet-700 hover:bg-violet-100"
+                                : "bg-accent-soft text-accent-hover hover:bg-accent-soft"
                             } disabled:cursor-not-allowed disabled:opacity-70`}
                           >
                             {downloadingId === fileId ? (
                               <>
-                                <span className="h-3 w-3 animate-spin rounded-full border-2 border-violet-200 border-t-violet-700" />
+                                <span className="h-3 w-3 animate-spin rounded-full border-2 border-accent-soft border-t-accent-hover" />
                                 Downloading...
                               </>
                             ) : downloadedId === fileId ? (

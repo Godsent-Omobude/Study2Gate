@@ -105,7 +105,7 @@ const SECTIONS = [
     afterNode: (
       <p>
         Further procedures are provided in our{" "}
-        <Link to="/copyright" className="font-bold text-blue-600 hover:underline">
+        <Link to="/copyright" className="font-bold text-accent hover:underline">
           Copyright Policy
         </Link>
         .
@@ -118,7 +118,7 @@ const SECTIONS = [
       <p>
         If you believe that User Content on Study2Gate infringes your copyright, you may submit a
         copyright complaint through the contact method specified in our{" "}
-        <Link to="/copyright" className="font-bold text-blue-600 hover:underline">
+        <Link to="/copyright" className="font-bold text-accent hover:underline">
           Copyright Policy
         </Link>
         .
@@ -311,7 +311,7 @@ export default function Terms() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
-        <Link to="/" className="text-sm font-bold text-blue-600 hover:text-blue-700">
+        <Link to="/" className="text-sm font-bold text-accent hover:text-accent-hover">
           &larr; Back to Study2Gate
         </Link>
 
@@ -379,11 +379,11 @@ export default function Terms() {
 
           <div className="mt-10 border-t border-slate-100 pt-6 text-sm text-slate-500">
             Also see our{" "}
-            <Link to="/privacy" className="font-bold text-blue-600 hover:underline">
+            <Link to="/privacy" className="font-bold text-accent hover:underline">
               Privacy Policy
             </Link>{" "}
             and{" "}
-            <Link to="/copyright" className="font-bold text-blue-600 hover:underline">
+            <Link to="/copyright" className="font-bold text-accent hover:underline">
               Copyright Policy
             </Link>
             .

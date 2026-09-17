@@ -35,7 +35,7 @@ export default function Flashcard({
     return (
       <div className="w-full rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
         <div className="mb-6 flex items-center justify-between gap-3">
-          <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-violet-700">
+          <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-wide text-accent-hover">
             Question
           </span>
           <span className="text-xs font-semibold text-slate-400">
@@ -65,14 +65,14 @@ export default function Flashcard({
               placeholder="Type your answer before revealing the correct answer..."
               rows={5}
               disabled={isEvaluating}
-              className="mt-2 w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 outline-none transition focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-100 disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-2 w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 outline-none transition focus:border-accent-soft0 focus:bg-white focus:ring-4 focus:ring-accent-soft disabled:cursor-not-allowed disabled:opacity-60"
             />
 
             <button
               type="button"
               onClick={submitAnswer}
               disabled={!answer.trim() || isEvaluating}
-              className="mt-4 w-full rounded-xl bg-violet-600 px-5 py-3.5 text-sm font-black text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-4 w-full rounded-xl bg-accent px-5 py-3.5 text-sm font-black text-white transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isEvaluating ? "Evaluating your answer..." : "Submit Answer"}
             </button>
@@ -128,7 +128,7 @@ export default function Flashcard({
               <button
                 type="button"
                 onClick={revealAnswer}
-                className="flex-1 rounded-xl bg-violet-600 px-5 py-3 text-sm font-black text-white transition hover:bg-violet-700"
+                className="flex-1 rounded-xl bg-accent px-5 py-3 text-sm font-black text-white transition hover:bg-accent-hover"
               >
                 {isRevealed ? "Answer Revealed" : "Reveal Answer"}
               </button>
@@ -171,7 +171,7 @@ export default function Flashcard({
       >
         <div className="absolute inset-0 flex min-h-[300px] flex-col rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-shadow duration-300 [backface-visibility:hidden] group-hover:shadow-xl">
           <div className="mb-6 flex items-center justify-between gap-3">
-            <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-violet-700">
+            <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-wide text-accent-hover">
               Question
             </span>
             <span className="text-xs font-semibold text-slate-400">
@@ -190,12 +190,12 @@ export default function Flashcard({
           </div>
         </div>
 
-        <div className="absolute inset-0 flex min-h-[300px] flex-col rounded-3xl border border-violet-200 bg-violet-50 p-7 shadow-sm [backface-visibility:hidden] [transform:rotateY(180deg)]">
+        <div className="absolute inset-0 flex min-h-[300px] flex-col rounded-3xl border border-accent-soft bg-accent-soft p-7 shadow-sm [backface-visibility:hidden] [transform:rotateY(180deg)]">
           <div className="mb-6 flex items-center justify-between gap-3">
-            <span className="rounded-full bg-white px-3 py-1 text-xs font-bold uppercase tracking-wide text-violet-700">
+            <span className="rounded-full bg-white px-3 py-1 text-xs font-bold uppercase tracking-wide text-accent-hover">
               Answer
             </span>
-            <span className="text-xs font-semibold text-violet-400">
+            <span className="text-xs font-semibold text-accent">
               Click to flip back
             </span>
           </div>
@@ -206,7 +206,7 @@ export default function Flashcard({
             </p>
           </div>
 
-          <div className="mt-6 border-t border-violet-200 pt-4 text-center text-xs font-medium text-violet-500">
+          <div className="mt-6 border-t border-accent-soft pt-4 text-center text-xs font-medium text-accent-soft0">
             Click to show the question
           </div>
         </div>

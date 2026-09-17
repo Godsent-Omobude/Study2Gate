@@ -16,12 +16,12 @@ export default function Navbar({ onMenuOpen, children }) {
             onClick={onMenuOpen}
             aria-label="Open navigation menu"
             aria-expanded={false}
-            className="group flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-brand-blue active:scale-95"
+            className="group flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-accent-soft hover:bg-accent-soft hover:text-accent active:scale-95"
           >
             <Menu className="h-[25px] w-[25px] transition group-hover:scale-95" strokeWidth={2} />
           </button>
 
-          <div className="text-[25px] font-black tracking-[-0.04em] text-brand-blue sm:text-[28px]">
+          <div className="text-[25px] font-black tracking-[-0.04em] text-accent sm:text-[28px]">
             Study2Gate
           </div>
         </div>
@@ -35,11 +35,11 @@ export default function Navbar({ onMenuOpen, children }) {
               alt={`${userName}'s profile`}
               title={userName}
               aria-label={`Logged in as ${userName}`}
-              className="h-11 w-11 shrink-0 rounded-full object-cover shadow-md shadow-blue-100 ring-4 ring-blue-50"
+              className="h-11 w-11 shrink-0 rounded-full object-cover shadow-md shadow-accent-soft ring-4 ring-accent-soft"
             />
           ) : (
             <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-accent text-base font-black text-white shadow-md shadow-blue-100 ring-4 ring-blue-50"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-base font-black text-white shadow-md shadow-accent-soft ring-4 ring-accent-soft"
               title={userName}
               aria-label={`Logged in as ${userName}`}
             >

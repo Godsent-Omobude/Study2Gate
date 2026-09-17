@@ -64,7 +64,7 @@ export default function DownloadCreditsBadge() {
       aria-label={`${credits} download credit${credits === 1 ? "" : "s"} remaining`}
       className="flex h-10 shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-slate-700 shadow-sm"
     >
-      <Coins className="h-4 w-4 text-brand-blue" />
+      <Coins className="h-4 w-4 text-accent" />
       <span className="text-sm font-black tabular-nums">{credits}</span>
       <span className="hidden text-xs font-bold text-slate-400 sm:inline">
         {credits === 1 ? "credit" : "credits"}

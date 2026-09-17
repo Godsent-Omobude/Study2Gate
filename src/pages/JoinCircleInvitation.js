@@ -64,7 +64,7 @@ export default function JoinCircleInvitation() {
             <p className="mt-3 text-sm font-semibold text-red-600">{error}</p>
             <Link
               to="/circles"
-              className="mt-6 inline-block rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-bold text-white"
+              className="mt-6 inline-block rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white"
             >
               Go to Study Circles
             </Link>
@@ -79,7 +79,7 @@ export default function JoinCircleInvitation() {
             <button
               type="button"
               onClick={() => navigate(`/circles/${preview.circle.id}`, { replace: true })}
-              className="mt-6 inline-block rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-bold text-white"
+              className="mt-6 inline-block rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white"
             >
               Go to Circle
             </button>
@@ -88,10 +88,10 @@ export default function JoinCircleInvitation() {
 
         {!loading && !error && preview && !preview.alreadyMember && (
           <>
-            <div className="mt-5 rounded-2xl border border-violet-200 bg-violet-50/60 p-5 text-left">
+            <div className="mt-5 rounded-2xl border border-accent-soft bg-accent-soft/60 p-5 text-left">
               <p className="text-lg font-black text-slate-900">{preview.circle.name}</p>
               {preview.circle.courseCode && (
-                <p className="mt-1 text-xs font-bold uppercase tracking-wide text-violet-600">
+                <p className="mt-1 text-xs font-bold uppercase tracking-wide text-accent">
                   {preview.circle.courseCode}
                 </p>
               )}
@@ -112,7 +112,7 @@ export default function JoinCircleInvitation() {
               type="button"
               onClick={handleJoin}
               disabled={joining}
-              className="mt-6 w-full rounded-xl bg-violet-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-violet-200 disabled:opacity-60"
+              className="mt-6 w-full rounded-xl bg-accent px-5 py-3 text-sm font-black text-white shadow-lg shadow-accent-soft disabled:opacity-60"
             >
               {joining ? "Joining..." : `Join ${preview.circle.name}`}
             </button>

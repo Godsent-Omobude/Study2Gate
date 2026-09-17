@@ -63,7 +63,7 @@ export default function ReportModal({ file, onClose, onSubmitted }) {
             </p>
             <button
               onClick={onClose}
-              className="mt-5 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-700"
+              className="mt-5 rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-accent-hover"
             >
               Close
             </button>
@@ -83,7 +83,7 @@ export default function ReportModal({ file, onClose, onSubmitted }) {
                   type="text"
                   value={complainantName}
                   onChange={(e) => setComplainantName(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-violet-500"
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent-soft0"
                 />
               </label>
 
@@ -94,7 +94,7 @@ export default function ReportModal({ file, onClose, onSubmitted }) {
                     type="email"
                     value={complainantEmail}
                     onChange={(e) => setComplainantEmail(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-violet-500"
+                    className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent-soft0"
                   />
                 </label>
                 <label className="block text-sm">
@@ -103,7 +103,7 @@ export default function ReportModal({ file, onClose, onSubmitted }) {
                     type="text"
                     value={complainantPhone}
                     onChange={(e) => setComplainantPhone(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-violet-500"
+                    className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent-soft0"
                   />
                 </label>
               </div>
@@ -115,7 +115,7 @@ export default function ReportModal({ file, onClose, onSubmitted }) {
                   value={copyrightedWork}
                   onChange={(e) => setCopyrightedWork(e.target.value)}
                   placeholder="Title of the original work you own or represent"
-                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-violet-500"
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent-soft0"
                 />
               </label>
 
@@ -126,7 +126,7 @@ export default function ReportModal({ file, onClose, onSubmitted }) {
                   onChange={(e) => setExplanation(e.target.value)}
                   rows={3}
                   placeholder="How does this Study2Gate material infringe your copyright?"
-                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-violet-500"
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent-soft0"
                 />
               </label>
 
@@ -137,7 +137,7 @@ export default function ReportModal({ file, onClose, onSubmitted }) {
                   onChange={(e) => setOwnershipEvidence(e.target.value)}
                   rows={2}
                   placeholder="Links, registration numbers, or other information showing you own/represent this work"
-                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-violet-500"
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent-soft0"
                 />
               </label>
 
@@ -160,7 +160,7 @@ export default function ReportModal({ file, onClose, onSubmitted }) {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-700 disabled:opacity-60"
+                  className="rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-accent-hover disabled:opacity-60"
                 >
                   {submitting ? "Submitting..." : "Submit report"}
                 </button>

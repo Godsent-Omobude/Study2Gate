@@ -56,7 +56,7 @@ export default function DisputeModal({ file, onClose, onSubmitted }) {
               value={explanation}
               onChange={(e) => setExplanation(e.target.value)}
               rows={4}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-violet-500"
+              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent-soft0"
               placeholder="Why do you believe this material can lawfully be on Study2Gate?"
             />
           </label>
@@ -78,7 +78,7 @@ export default function DisputeModal({ file, onClose, onSubmitted }) {
               type="text"
               value={otherLawfulBasis}
               onChange={(e) => setOtherLawfulBasis(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-violet-500"
+              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-accent-soft0"
               placeholder="e.g. This is my own lecture notes, not the source text"
             />
           </label>
@@ -92,7 +92,7 @@ export default function DisputeModal({ file, onClose, onSubmitted }) {
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-700 disabled:opacity-60"
+              className="rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-accent-hover disabled:opacity-60"
             >
               {submitting ? "Submitting..." : "Submit dispute"}
             </button>

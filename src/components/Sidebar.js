@@ -100,7 +100,7 @@ export default function Sidebar({ open, onClose }) {
             />
           </div>
           <div className="text-[21px] font-black tracking-[-0.04em] text-slate-900">
-            Study<span className="logo-mark text-violet-600">2Gate</span>
+            Study<span className="logo-mark text-brand-blue">2Gate</span>
           </div>
           <button
             type="button"
@@ -118,10 +118,10 @@ export default function Sidebar({ open, onClose }) {
               <img
                 src={profilePictureUrl}
                 alt="Profile"
-                className="h-12 w-12 rounded-2xl object-cover ring-2 ring-violet-200"
+                className="h-12 w-12 rounded-2xl object-cover ring-2 ring-accent-soft"
               />
             ) : (
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-violet-400 text-lg font-black text-white shadow-lg shadow-violet-200">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-lg font-black text-white shadow-lg shadow-accent-soft">
                 {(fullName[0] || "S").toUpperCase()}
               </div>
             )}
@@ -147,7 +147,7 @@ export default function Sidebar({ open, onClose }) {
                 className={({ isActive }) =>
                   `group flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-bold transition ${
                     isActive
-                      ? "bg-violet-50 text-violet-700"
+                      ? "bg-accent-soft text-accent-hover"
                       : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
                   }`
                 }
@@ -157,8 +157,8 @@ export default function Sidebar({ open, onClose }) {
                     <span
                       className={`flex h-9 w-9 items-center justify-center rounded-xl transition ${
                         isActive
-                          ? "bg-violet-100 text-violet-700"
-                          : "bg-slate-100 text-slate-400 group-hover:text-violet-600"
+                          ? "bg-accent-soft text-accent-hover"
+                          : "bg-slate-100 text-slate-400 group-hover:text-accent"
                       }`}
                     >
                       <Icon name={item.icon} />
@@ -181,7 +181,7 @@ export default function Sidebar({ open, onClose }) {
               className={({ isActive }) =>
                 `mb-1 flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-bold transition ${
                   isActive
-                    ? "bg-violet-50 text-violet-700"
+                    ? "bg-accent-soft text-accent-hover"
                     : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
                 }`
               }
@@ -199,7 +199,7 @@ export default function Sidebar({ open, onClose }) {
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-bold transition ${
                 isActive
-                  ? "bg-violet-50 text-violet-700"
+                  ? "bg-accent-soft text-accent-hover"
                   : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
               }`
             }
@@ -212,7 +212,7 @@ export default function Sidebar({ open, onClose }) {
         </nav>
 
         <div className="border-t border-slate-100 p-4">
-          <div className="mb-3 rounded-2xl border border-violet-100 bg-gradient-to-br from-violet-50 to-white p-4">
+          <div className="mb-3 rounded-2xl border border-accent-soft bg-accent-soft p-4">
             <p className="text-xs font-black text-slate-800">Study smarter 🚀</p>
             <p className="mt-1 text-[11px] leading-4 text-slate-500">
               Keep your study streak alive and make every session count.

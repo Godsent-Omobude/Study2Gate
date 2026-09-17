@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  ShieldAlert,
   X,
   RefreshCw,
   FileWarning,
@@ -17,6 +16,7 @@ import {
   Trash2,
   Link2,
 } from "lucide-react";
+import { AdminShieldIcon } from "./icons/AdminIcons";
 import api from "../api/api";
 
 const RISK_STYLES = {
@@ -134,7 +134,7 @@ function TabButton({ active, onClick, icon: IconCmp, label }) {
     <button
       onClick={onClick}
       className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold border-b-2 -mb-px ${
-        active ? "border-brand-blue text-brand-blue" : "border-transparent text-slate-500 hover:text-slate-700"
+        active ? "border-accent text-accent" : "border-transparent text-slate-500 hover:text-slate-700"
       }`}
     >
       <IconCmp className="h-4 w-4" /> {label}
@@ -249,7 +249,7 @@ function QueueTab({ notify, fail, onChanged }) {
             key={f.key}
             onClick={() => setFilter(f.key)}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border ${
-              filter === f.key ? "bg-brand-blue text-white border-brand-blue" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+              filter === f.key ? "bg-accent text-white border-accent" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
             }`}
           >
             {f.dot && <Dot color={f.dot} />}
@@ -262,7 +262,7 @@ function QueueTab({ notify, fail, onChanged }) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search by title, course code, or uploader..."
-        className="w-full mb-4 px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
+        className="w-full mb-4 px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30"
       />
 
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden overflow-x-auto">
@@ -442,7 +442,7 @@ function FileDetailDrawer({ fileId, onClose, onNavigate, onBack, notify, fail, o
                 <ArrowLeft className="h-4 w-4" />
               </button>
             )}
-            <ShieldAlert className="h-5 w-5 text-brand-blue" /> Copyright Review
+            <AdminShieldIcon size={20} style={{ color: "var(--accent)" }} /> Copyright Review
           </h3>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-slate-100"><X className="h-5 w-5" /></button>
         </div>
@@ -500,7 +500,7 @@ function FileDetailDrawer({ fileId, onClose, onNavigate, onBack, notify, fail, o
                       href={data.file.externalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-brand-blue hover:underline"
+                      className="inline-flex items-center gap-1 text-accent hover:underline"
                     >
                       <ExternalLink className="h-3.5 w-3.5" /> {data.file.externalDomain || data.file.externalUrl}
                     </a>
@@ -561,7 +561,7 @@ function FileDetailDrawer({ fileId, onClose, onNavigate, onBack, notify, fail, o
                     <ul className="space-y-1">
                       {data.file.sourceReferences.map((ref, i) => (
                         <li key={i} className="text-xs text-slate-500 truncate">
-                          <a href={ref.url} target="_blank" rel="noreferrer" className="text-brand-blue hover:underline">
+                          <a href={ref.url} target="_blank" rel="noreferrer" className="text-accent hover:underline">
                             {ref.domain || ref.url}
                           </a>
                         </li>
@@ -689,7 +689,7 @@ function Row({ label, value }) {
 
 function ActionButton({ children, onClick, busy, tone = "default" }) {
   const tones = {
-    default: "bg-brand-blue text-white hover:opacity-90",
+    default: "bg-accent text-white hover:opacity-90",
     warn: "bg-amber-100 text-amber-800 hover:bg-amber-200",
     danger: "bg-red-100 text-red-700 hover:bg-red-200",
   };
@@ -822,9 +822,9 @@ function ReportsTab({ notify, fail, onChanged }) {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
         <div className="flex flex-wrap gap-2">
-          <button onClick={() => setStatus("")} className={`px-3 py-1.5 rounded-full text-xs font-bold border ${!status ? "bg-brand-blue text-white border-brand-blue" : "bg-white text-slate-600 border-slate-200"}`}>All</button>
+          <button onClick={() => setStatus("")} className={`px-3 py-1.5 rounded-full text-xs font-bold border ${!status ? "bg-accent text-white border-accent" : "bg-white text-slate-600 border-slate-200"}`}>All</button>
           {REPORT_STATUSES.map((s) => (
-            <button key={s} onClick={() => setStatus(s)} className={`px-3 py-1.5 rounded-full text-xs font-bold border ${status === s ? "bg-brand-blue text-white border-brand-blue" : "bg-white text-slate-600 border-slate-200"}`}>
+            <button key={s} onClick={() => setStatus(s)} className={`px-3 py-1.5 rounded-full text-xs font-bold border ${status === s ? "bg-accent text-white border-accent" : "bg-white text-slate-600 border-slate-200"}`}>
               {s.replace(/_/g, " ")}
             </button>
           ))}
@@ -902,7 +902,7 @@ function ReportsTab({ notify, fail, onChanged }) {
                   </div>
                 </div>
               ) : (
-                <button onClick={() => openReport(r)} className="text-xs font-bold text-brand-blue hover:underline">Review this report</button>
+                <button onClick={() => openReport(r)} className="text-xs font-bold text-accent hover:underline">Review this report</button>
               )}
             </div>
           ))
@@ -959,9 +959,9 @@ function DisputesTab({ notify, fail, onChanged }) {
   return (
     <div>
       <div className="flex flex-wrap gap-2 mb-4">
-        <button onClick={() => setStatus("")} className={`px-3 py-1.5 rounded-full text-xs font-bold border ${!status ? "bg-brand-blue text-white border-brand-blue" : "bg-white text-slate-600 border-slate-200"}`}>All</button>
+        <button onClick={() => setStatus("")} className={`px-3 py-1.5 rounded-full text-xs font-bold border ${!status ? "bg-accent text-white border-accent" : "bg-white text-slate-600 border-slate-200"}`}>All</button>
         {DISPUTE_STATUSES.map((s) => (
-          <button key={s} onClick={() => setStatus(s)} className={`px-3 py-1.5 rounded-full text-xs font-bold border ${status === s ? "bg-brand-blue text-white border-brand-blue" : "bg-white text-slate-600 border-slate-200"}`}>
+          <button key={s} onClick={() => setStatus(s)} className={`px-3 py-1.5 rounded-full text-xs font-bold border ${status === s ? "bg-accent text-white border-accent" : "bg-white text-slate-600 border-slate-200"}`}>
             {s}
           </button>
         ))}
@@ -999,7 +999,7 @@ function DisputesTab({ notify, fail, onChanged }) {
                   </div>
                 </div>
               ) : (
-                <button onClick={() => openDispute(d)} className="text-xs font-bold text-brand-blue hover:underline">Review this dispute</button>
+                <button onClick={() => openDispute(d)} className="text-xs font-bold text-accent hover:underline">Review this dispute</button>
               )}
             </div>
           ))

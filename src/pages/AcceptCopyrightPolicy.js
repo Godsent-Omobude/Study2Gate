@@ -65,11 +65,11 @@ export default function AcceptCopyrightPolicy() {
     <div className="min-h-screen bg-[#171238] px-4 py-10">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-xl items-center justify-center">
         <div className="w-full overflow-hidden rounded-3xl bg-white shadow-2xl">
-          <div className="bg-gradient-to-br from-[#171238] via-[#2f2a8f] to-[#635bff] px-6 pb-7 pt-8 text-center text-white">
+          <div className="bg-accent px-6 pb-7 pt-8 text-center text-white">
             <div className="flex items-center justify-center gap-3">
               <img src={logo} alt="Study2Gate" className="h-12 w-12 rounded-2xl object-contain" />
               <h1 className="text-2xl font-black tracking-tight">
-                Study<span className="logo-mark text-blue-200">2Gate</span>
+                Study<span className="logo-mark text-accent-soft">2Gate</span>
               </h1>
             </div>
           </div>
@@ -93,7 +93,7 @@ export default function AcceptCopyrightPolicy() {
               </p>
               <p className="mt-2">
                 Read the full{" "}
-                <Link to="/copyright" target="_blank" className="font-bold text-[#635bff] hover:underline">
+                <Link to="/copyright" target="_blank" className="font-bold text-accent hover:underline">
                   Copyright Policy
                 </Link>
                 .
@@ -113,11 +113,11 @@ export default function AcceptCopyrightPolicy() {
                   required
                   checked={accepted}
                   onChange={(e) => setAccepted(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-[#635bff] focus:ring-[#635bff]"
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-accent focus:ring-accent"
                 />
                 <span>
                   I have read and agree to the{" "}
-                  <Link to="/copyright" target="_blank" className="font-bold text-[#635bff] hover:underline">
+                  <Link to="/copyright" target="_blank" className="font-bold text-accent hover:underline">
                     Copyright Policy
                   </Link>
                   .
@@ -127,7 +127,7 @@ export default function AcceptCopyrightPolicy() {
               <button
                 type="submit"
                 disabled={loading || !accepted}
-                className="flex w-full items-center justify-center rounded-xl bg-[#635bff] py-3.5 text-sm font-black text-white shadow-lg shadow-blue-200 transition hover:bg-[#5148e8] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex w-full items-center justify-center rounded-xl bg-accent py-3.5 text-sm font-black text-white shadow-lg shadow-accent-soft transition hover:bg-accent-hover active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? <EqualizerLoader label="Continuing…" /> : "Accept & Continue"}
               </button>

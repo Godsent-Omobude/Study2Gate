@@ -86,7 +86,7 @@ export default function Login() {
       <div className="min-h-screen bg-[#171238] px-4 py-10">
         <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl items-center justify-center">
         <div className="grid w-full overflow-hidden rounded-3xl bg-white shadow-2xl lg:grid-cols-2">
-          <div className="hidden bg-gradient-to-br from-[#171238] to-blue-700 p-12 text-white lg:block">
+          <div className="hidden bg-accent p-12 text-white lg:block">
             <div className="flex items-center gap-3">
               <img
                 src={logo}
@@ -94,11 +94,11 @@ export default function Login() {
                 className="h-12 w-12 rounded-2xl object-contain"
               />
               <div className="text-3xl font-black tracking-tight">
-                Study<span className="logo-mark text-blue-300">Share</span>
+                Study<span className="logo-mark text-accent-soft">Share</span>
               </div>
             </div>
             <div className="mt-24">
-              <p className="text-sm font-bold uppercase tracking-widest text-blue-200">
+              <p className="text-sm font-bold uppercase tracking-widest text-accent-soft">
                 Academic workspace
               </p>
               <h1 className="mt-4 text-5xl font-black leading-tight">
@@ -119,7 +119,7 @@ export default function Login() {
                   className="h-14 w-14 rounded-2xl object-contain"
                 />
                 <span className="text-2xl font-black tracking-tight text-slate-900">
-                  Study<span className="logo-mark text-blue-600">2Gate</span>
+                  Study<span className="logo-mark text-accent">2Gate</span>
                 </span>
               </div>
 
@@ -144,7 +144,7 @@ export default function Login() {
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Enter your username"
                     autoComplete="username"
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-blue-500 focus:bg-white"
+                    className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-accent-soft0 focus:bg-white"
                   />
                 </div>
 
@@ -158,7 +158,7 @@ export default function Login() {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
                       autoComplete="current-password"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 outline-none focus:border-blue-500 focus:bg-white"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 outline-none focus:border-accent-soft0 focus:bg-white"
                     />
                     <button
                       type="button"
@@ -174,7 +174,7 @@ export default function Login() {
                 <div className="flex justify-end -mt-2">
                   <Link
                     to="/forgot-password"
-                    className="text-sm font-bold text-blue-700 hover:underline"
+                    className="text-sm font-bold text-accent-hover hover:underline"
                   >
                     Forgot password?
                   </Link>
@@ -183,7 +183,7 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex w-full items-center justify-center rounded-xl bg-blue-600 py-3.5 text-sm font-black text-white shadow-lg shadow-blue-200 hover:bg-blue-700 disabled:opacity-60"
+                  className="flex w-full items-center justify-center rounded-xl bg-accent py-3.5 text-sm font-black text-white shadow-lg shadow-accent-soft hover:bg-accent-hover disabled:opacity-60"
                 >
                   {loading ? <EqualizerLoader label="Signing in…" /> : "Sign In"}
                 </button>
@@ -191,7 +191,7 @@ export default function Login() {
 
               <p className="mt-6 text-center text-sm text-slate-500">
                 New to Study2Gate?{" "}
-                <Link to="/register" className="font-bold text-blue-700 hover:underline">
+                <Link to="/register" className="font-bold text-accent-hover hover:underline">
                   Create an account
                 </Link>
               </p>

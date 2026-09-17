@@ -28,7 +28,7 @@ export default function ForgotPassword() {
     <div className="min-h-screen bg-[#07152f] px-4 py-10">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl items-center justify-center">
         <div className="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl sm:p-10">
-          <div className="text-3xl font-black text-blue-700">
+          <div className="text-3xl font-black text-accent-hover">
             Study<span className="text-slate-900">Share</span>
           </div>
 
@@ -59,14 +59,14 @@ export default function ForgotPassword() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 autoComplete="email"
-                className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-blue-500 focus:bg-white"
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-accent-soft0 focus:bg-white"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-blue-600 py-3.5 text-sm font-black text-white shadow-lg shadow-blue-200 hover:bg-blue-700 disabled:opacity-60"
+              className="w-full rounded-xl bg-accent py-3.5 text-sm font-black text-white shadow-lg shadow-accent-soft hover:bg-accent-hover disabled:opacity-60"
             >
               {loading ? "Sending..." : "Send Reset Link"}
             </button>
@@ -74,7 +74,7 @@ export default function ForgotPassword() {
 
           <p className="mt-6 text-center text-sm text-slate-500">
             Remembered your password?{" "}
-            <Link to="/login" className="font-bold text-blue-700 hover:underline">
+            <Link to="/login" className="font-bold text-accent-hover hover:underline">
               Back to login
             </Link>
           </p>

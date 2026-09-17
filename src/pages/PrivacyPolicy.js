@@ -58,7 +58,7 @@ export default function PrivacyPolicy() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
-        <Link to="/" className="text-sm font-bold text-blue-600 hover:text-blue-700">
+        <Link to="/" className="text-sm font-bold text-accent hover:text-accent-hover">
           &larr; Back to Study2Gate
         </Link>
 
@@ -83,11 +83,11 @@ export default function PrivacyPolicy() {
           </div>
           <div className="mt-10 border-t border-slate-100 pt-6 text-sm text-slate-500">
             Also see our{" "}
-            <Link to="/terms" className="font-bold text-blue-600 hover:underline">
+            <Link to="/terms" className="font-bold text-accent hover:underline">
               Terms &amp; Conditions
             </Link>{" "}
             and{" "}
-            <Link to="/copyright" className="font-bold text-blue-600 hover:underline">
+            <Link to="/copyright" className="font-bold text-accent hover:underline">
               Copyright Policy
             </Link>
             .

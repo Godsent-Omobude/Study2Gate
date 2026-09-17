@@ -294,7 +294,7 @@ export default function FlashcardList({
             onClick={() => switchMode("normal")}
             className={`rounded-lg px-3 py-2 text-xs font-black transition ${
               mode === "normal"
-                ? "bg-violet-600 text-white"
+                ? "bg-accent text-white"
                 : "text-slate-500 hover:bg-slate-50"
             }`}
           >
@@ -305,7 +305,7 @@ export default function FlashcardList({
             onClick={() => switchMode("test")}
             className={`rounded-lg px-3 py-2 text-xs font-black transition ${
               mode === "test"
-                ? "bg-violet-600 text-white"
+                ? "bg-accent text-white"
                 : "text-slate-500 hover:bg-slate-50"
             }`}
           >
@@ -316,7 +316,7 @@ export default function FlashcardList({
 
       <div className="mb-5 h-2 overflow-hidden rounded-full bg-slate-100">
         <div
-          className="h-full rounded-full bg-violet-600 transition-all duration-300"
+          className="h-full rounded-full bg-accent transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -352,11 +352,11 @@ export default function FlashcardList({
       )}
 
       {mode === "test" && (
-        <div className="mb-5 rounded-2xl border border-violet-100 bg-violet-50 p-4">
-          <p className="text-sm font-bold text-violet-900">
+        <div className="mb-5 rounded-2xl border border-accent-soft bg-accent-soft p-4">
+          <p className="text-sm font-bold text-accent-hover">
             Test Yourself
           </p>
-          <p className="mt-1 text-xs leading-5 text-violet-700">
+          <p className="mt-1 text-xs leading-5 text-accent-hover">
             Type what you know first. Your answer will be scored before the
             correct answer can be revealed.
           </p>
@@ -409,7 +409,7 @@ export default function FlashcardList({
               isEvaluating ||
               (mode === "test" && !evaluation)
             }
-            className="inline-flex items-center gap-1.5 rounded-xl bg-violet-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-white transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
           >
             Next <ArrowRight className="h-4 w-4" />
           </button>
@@ -430,7 +430,7 @@ export default function FlashcardList({
             <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
               Average score
             </p>
-            <p className="mt-1 text-2xl font-black text-violet-600">
+            <p className="mt-1 text-2xl font-black text-accent">
               {averageScore}%
             </p>
           </div>

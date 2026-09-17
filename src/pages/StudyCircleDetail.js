@@ -9,7 +9,7 @@ import { broadcastDownloadCredits, readDownloadErrorPayload } from "../utils/dow
 
 const ROLE_BADGE = {
   OWNER: "bg-amber-100 text-amber-700",
-  MODERATOR: "bg-violet-100 text-violet-700",
+  MODERATOR: "bg-accent-soft text-accent-hover",
   MEMBER: "bg-slate-100 text-slate-600",
 };
 
@@ -117,20 +117,20 @@ function MaterialsTab({ circleId }) {
         </p>
         <button
           onClick={openPicker}
-          className="rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-700"
+          className="rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-accent-hover"
         >
           + Share Material
         </button>
       </div>
 
       {showPicker && (
-        <div className="mb-4 rounded-2xl border border-violet-200 bg-violet-50/40 p-4">
+        <div className="mb-4 rounded-2xl border border-accent-soft bg-accent-soft/40 p-4">
           <input
             type="text"
             value={pickerSearch}
             onChange={(e) => setPickerSearch(e.target.value)}
             placeholder="Search your materials library..."
-            className="mb-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-violet-500"
+            className="mb-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-accent-soft0"
           />
           <div className="max-h-64 space-y-2 overflow-y-auto">
             {filteredPickerFiles.length === 0 ? (
@@ -152,7 +152,7 @@ function MaterialsTab({ circleId }) {
                   <button
                     onClick={() => shareFile(f.id)}
                     disabled={sharing === f.id}
-                    className="shrink-0 rounded-lg bg-violet-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-violet-700 disabled:opacity-50"
+                    className="shrink-0 rounded-lg bg-accent px-3 py-1.5 text-xs font-bold text-white hover:bg-accent-hover disabled:opacity-50"
                   >
                     {sharing === f.id ? "Sharing..." : "Share"}
                   </button>
@@ -200,7 +200,7 @@ function MaterialsTab({ circleId }) {
                 <button
                   onClick={() => downloadFile(s.file.id, s.file.title)}
                   disabled={downloadingId === s.file.id}
-                  className="mt-3 inline-block rounded-lg bg-violet-50 px-3 py-1.5 text-xs font-bold text-violet-700 hover:bg-violet-100 disabled:opacity-50"
+                  className="mt-3 inline-block rounded-lg bg-accent-soft px-3 py-1.5 text-xs font-bold text-accent-hover hover:bg-accent-soft disabled:opacity-50"
                 >
                   {downloadingId === s.file.id ? "Downloading..." : (
                     <span className="inline-flex items-center gap-1">
@@ -252,7 +252,7 @@ function FlashcardsTab({ circleId }) {
         </p>
         <Link
           to={`/generate-flashcards?circleId=${circleId}`}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-700"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-accent-hover"
         >
           <Sparkles className="h-4 w-4" /> Generate for Circle
         </Link>
@@ -384,7 +384,7 @@ function MembersTab({ circleId, myRole, onRoleChanged }) {
   return (
     <div className="space-y-6">
       {canManage && (
-        <div className="rounded-2xl border border-violet-200 bg-violet-50/40 p-4">
+        <div className="rounded-2xl border border-accent-soft bg-accent-soft/40 p-4">
           <h3 className="text-sm font-black text-slate-900">
             Invite by username
           </h3>
@@ -394,12 +394,12 @@ function MembersTab({ circleId, myRole, onRoleChanged }) {
               value={inviteUsername}
               onChange={(e) => setInviteUsername(e.target.value)}
               placeholder="username"
-              className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-violet-500"
+              className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-accent-soft0"
             />
             <button
               type="submit"
               disabled={inviting || !inviteUsername.trim()}
-              className="rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-700 disabled:opacity-50"
+              className="rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-accent-hover disabled:opacity-50"
             >
               {inviting ? "Sending..." : "Send Invite"}
             </button>
@@ -466,7 +466,7 @@ function MembersTab({ circleId, myRole, onRoleChanged }) {
               className="flex items-center justify-between gap-3 border-b border-slate-100 p-4 last:border-b-0"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 text-sm font-black text-violet-700">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-sm font-black text-accent-hover">
                   {m.username[0]?.toUpperCase()}
                 </div>
                 <span className="font-bold text-slate-800">{m.username}</span>
@@ -576,21 +576,21 @@ function JoinCodeManagement({ circleId }) {
     catch (err) { setMessage(err.response?.data?.message || "Unable to create invitation link."); }
   };
 
-  if (!settings) return <div className="rounded-2xl border border-violet-200 bg-violet-50/40 p-4 text-sm text-slate-500">Loading join-code controls...</div>;
-  return <section className="mb-5 rounded-3xl border border-violet-200 bg-violet-50/50 p-4 sm:p-5">
+  if (!settings) return <div className="rounded-2xl border border-accent-soft bg-accent-soft/40 p-4 text-sm text-slate-500">Loading join-code controls...</div>;
+  return <section className="mb-5 rounded-3xl border border-accent-soft bg-accent-soft/50 p-4 sm:p-5">
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div><p className="text-sm font-black text-slate-900">Join Code Management</p><p className="mt-1 text-xs text-slate-500">Only the Circle Owner can change these settings.</p></div>
       <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase ${settings.enabled ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>{settings.enabled ? "Active" : "Disabled"}</span>
     </div>
     <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <div className="rounded-2xl bg-white p-3"><p className="text-[10px] font-bold uppercase text-slate-400">Current code</p><p className="mt-1 font-black tracking-[0.18em] text-slate-900">{settings.joinCode}</p><button type="button" onClick={() => navigator.clipboard?.writeText(settings.joinCode)} className="mt-2 text-xs font-bold text-violet-600">Copy code</button></div>
+      <div className="rounded-2xl bg-white p-3"><p className="text-[10px] font-bold uppercase text-slate-400">Current code</p><p className="mt-1 font-black tracking-[0.18em] text-slate-900">{settings.joinCode}</p><button type="button" onClick={() => navigator.clipboard?.writeText(settings.joinCode)} className="mt-2 text-xs font-bold text-accent">Copy code</button></div>
       <label className="rounded-2xl bg-white p-3"><span className="text-[10px] font-bold uppercase text-slate-400">Expiration</span><input type="datetime-local" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-xs" /><span className="mt-1 block text-[10px] text-slate-400">Leave empty for no expiration.</span></label>
       <label className="rounded-2xl bg-white p-3"><span className="text-[10px] font-bold uppercase text-slate-400">Maximum uses</span><input type="number" min="1" value={maxUses} onChange={(e) => setMaxUses(e.target.value)} placeholder="Unlimited" className="mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-xs" /><span className="mt-1 block text-[10px] text-slate-400">Successful joins only.</span></label>
       <div className="rounded-2xl bg-white p-3"><p className="text-[10px] font-bold uppercase text-slate-400">Usage</p><p className="mt-1 text-sm font-black text-slate-900">{settings.uses}{settings.maxUses == null ? <> / <InfinityIcon className="inline h-3.5 w-3.5 align-[-2px]" /></> : ` / ${settings.maxUses}`}</p><p className="mt-1 text-[10px] text-slate-400">{settings.usesRemaining == null ? "Unlimited remaining" : `${settings.usesRemaining} remaining`}</p></div>
     </div>
     <div className="mt-4 flex flex-wrap gap-2">
-      <button type="button" onClick={save} disabled={saving} className="rounded-xl bg-violet-600 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{saving ? "Saving..." : "Save settings"}</button>
-      <button type="button" onClick={regenerate} className="rounded-xl border border-violet-200 bg-white px-4 py-2.5 text-xs font-bold text-violet-700">Regenerate</button>
+      <button type="button" onClick={save} disabled={saving} className="rounded-xl bg-accent px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{saving ? "Saving..." : "Save settings"}</button>
+      <button type="button" onClick={regenerate} className="rounded-xl border border-accent-soft bg-white px-4 py-2.5 text-xs font-bold text-accent-hover">Regenerate</button>
       <button type="button" onClick={toggle} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-600">{settings.enabled ? "Disable" : "Enable"}</button>
       <button type="button" onClick={createLink} disabled={!settings.enabled} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-600 disabled:opacity-50">Create temporary link</button>
     </div>
@@ -641,7 +641,7 @@ function SessionComposer({ circleId, onCreated, onCancel }) {
   };
 
   return (
-    <form onSubmit={submit} className="mb-5 rounded-2xl border border-violet-200 bg-violet-50/40 p-4">
+    <form onSubmit={submit} className="mb-5 rounded-2xl border border-accent-soft bg-accent-soft/40 p-4">
       <div className="grid gap-3 sm:grid-cols-2">
         <input
           type="text"
@@ -682,7 +682,7 @@ function SessionComposer({ circleId, onCreated, onCancel }) {
       />
       {error && <p className="mt-2 text-xs font-semibold text-red-600">{error}</p>}
       <div className="mt-3 flex gap-2">
-        <button type="submit" disabled={saving} className="rounded-xl bg-violet-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-violet-700 disabled:opacity-50">
+        <button type="submit" disabled={saving} className="rounded-xl bg-accent px-4 py-2.5 text-xs font-bold text-white hover:bg-accent-hover disabled:opacity-50">
           {saving ? "Scheduling..." : "Schedule Session"}
         </button>
         <button type="button" onClick={onCancel} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50">
@@ -745,7 +745,7 @@ function SessionsTab({ circleId }) {
           Show past sessions
         </label>
         {!showComposer && (
-          <button onClick={() => setShowComposer(true)} className="rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-700">
+          <button onClick={() => setShowComposer(true)} className="rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-accent-hover">
             + Schedule Session
           </button>
         )}
@@ -777,7 +777,7 @@ function SessionsTab({ circleId }) {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="font-bold text-slate-900">{session.title}</p>
-                  <p className="mt-1 text-xs font-semibold text-violet-600">
+                  <p className="mt-1 text-xs font-semibold text-accent">
                     {new Date(session.scheduledFor).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}
                     {" · "}{session.durationMinutes} min
                   </p>
@@ -894,7 +894,7 @@ function NotesTab({ circleId }) {
           A shared resoure for this circle. Any member can add or edit a note.
         </p>
         {!creating && (
-          <button onClick={() => setCreating(true)} className="rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-700">
+          <button onClick={() => setCreating(true)} className="rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-accent-hover">
             + New Note
           </button>
         )}
@@ -909,7 +909,7 @@ function NotesTab({ circleId }) {
             placeholder="Note title (e.g. Exam 2 topics)"
             className="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm"
           />
-          <button onClick={createNote} disabled={saving} className="rounded-xl bg-violet-600 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">
+          <button onClick={createNote} disabled={saving} className="rounded-xl bg-accent px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">
             Create
           </button>
           <button onClick={() => setCreating(false)} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-600">
@@ -940,7 +940,7 @@ function NotesTab({ circleId }) {
                 </div>
                 <div className="flex shrink-0 gap-2">
                   {openNoteId !== note.id && (
-                    <button onClick={() => openNote(note)} className="text-xs font-bold text-violet-600 hover:text-violet-800">
+                    <button onClick={() => openNote(note)} className="text-xs font-bold text-accent hover:text-accent-hover">
                       Edit
                     </button>
                   )}
@@ -959,7 +959,7 @@ function NotesTab({ circleId }) {
                     className="w-full resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-sm"
                   />
                   <div className="mt-2 flex gap-2">
-                    <button onClick={() => saveNote(note.id)} disabled={saving} className="rounded-xl bg-violet-600 px-4 py-2 text-xs font-bold text-white disabled:opacity-50">
+                    <button onClick={() => saveNote(note.id)} disabled={saving} className="rounded-xl bg-accent px-4 py-2 text-xs font-bold text-white disabled:opacity-50">
                       {saving ? "Saving..." : "Save"}
                     </button>
                     <button onClick={() => setOpenNoteId(null)} className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600">
@@ -1063,7 +1063,7 @@ export default function StudyCircleDetail() {
           </p>
           <Link
             to="/circles"
-            className="mt-4 inline-block text-sm font-bold text-violet-600"
+            className="mt-4 inline-block text-sm font-bold text-accent"
           >
             <span className="inline-flex items-center gap-1"><ArrowLeft className="h-3.5 w-3.5" /> Back to Study Circles</span>
           </Link>
@@ -1079,7 +1079,7 @@ export default function StudyCircleDetail() {
         <div className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
           <h1 className="text-2xl font-black text-slate-900">{circle.name}</h1>
           {circle.courseCode && (
-            <p className="mt-1 text-sm font-bold text-violet-600">
+            <p className="mt-1 text-sm font-bold text-accent">
               {circle.courseCode}
             </p>
           )}
@@ -1101,7 +1101,7 @@ export default function StudyCircleDetail() {
             <button
               onClick={requestToJoin}
               disabled={requesting}
-              className="mt-6 rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-violet-700 disabled:opacity-50"
+              className="mt-6 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-white hover:bg-accent-hover disabled:opacity-50"
             >
               {requesting ? "Requesting..." : "Request to Join"}
             </button>
@@ -1132,7 +1132,7 @@ export default function StudyCircleDetail() {
   return (
     <main className="min-h-[calc(100vh-5rem)] bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
-        <Link to="/circles" className="text-xs font-bold text-violet-600">
+        <Link to="/circles" className="text-xs font-bold text-accent">
           <span className="inline-flex items-center gap-1"><ArrowLeft className="h-3.5 w-3.5" /> Back to Study Circles</span>
         </Link>
 
@@ -1158,7 +1158,7 @@ export default function StudyCircleDetail() {
               </span>
             </div>
             {circle.courseCode && (
-              <p className="mt-1 text-sm font-bold text-violet-600">
+              <p className="mt-1 text-sm font-bold text-accent">
                 {circle.courseCode}
               </p>
             )}
@@ -1209,7 +1209,7 @@ export default function StudyCircleDetail() {
               onClick={() => setTab(t.key)}
               className={`border-b-2 px-4 py-2.5 text-sm font-bold transition ${
                 tab === t.key
-                  ? "border-violet-600 text-violet-700"
+                  ? "border-accent text-accent-hover"
                   : "border-transparent text-slate-500 hover:text-slate-800"
               }`}
             >

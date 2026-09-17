@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Users } from "lucide-react";
+import { UsersIcon } from "../components/icons/AdminIcons";
 import api from "../api/api";
 
 const VISIBILITY_BADGE = {
@@ -15,7 +15,7 @@ function CircleCard({ circle, footer }) {
         <div className="min-w-0">
           <h3 className="truncate font-black text-slate-900">{circle.name}</h3>
           {circle.courseCode && (
-            <p className="mt-0.5 text-xs font-bold text-violet-600">
+            <p className="mt-0.5 text-xs font-bold text-accent">
               {circle.courseCode}
             </p>
           )}
@@ -38,7 +38,7 @@ function CircleCard({ circle, footer }) {
       <div className="mt-3 flex items-center gap-3 text-xs text-slate-400">
         <span>{circle.memberCount} member{circle.memberCount === 1 ? "" : "s"}</span>
         {circle.role && (
-          <span className="rounded-full bg-violet-50 px-2 py-0.5 font-bold text-violet-700">
+          <span className="rounded-full bg-accent-soft px-2 py-0.5 font-bold text-accent-hover">
             {circle.role}
           </span>
         )}
@@ -217,7 +217,7 @@ export default function StudyCircles() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-bold text-violet-600">STUDY TOGETHER</p>
+            <p className="text-sm font-bold text-accent">STUDY TOGETHER</p>
             <h1 className="mt-1 text-3xl font-black text-slate-900">
               Study Circles
             </h1>
@@ -229,7 +229,7 @@ export default function StudyCircles() {
           <button
             type="button"
             onClick={() => setShowCreateForm((v) => !v)}
-            className="rounded-xl bg-violet-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-violet-200 hover:bg-violet-700"
+            className="rounded-xl bg-accent px-4 py-3 text-sm font-bold text-white shadow-lg shadow-accent-soft hover:bg-accent-hover"
           >
             {showCreateForm ? "Cancel" : "+ Create Circle"}
           </button>
@@ -238,7 +238,7 @@ export default function StudyCircles() {
         {showCreateForm && (
           <form
             onSubmit={createCircle}
-            className="mb-6 grid gap-4 rounded-3xl border border-violet-200 bg-violet-50/40 p-5 sm:p-7"
+            className="mb-6 grid gap-4 rounded-3xl border border-accent-soft bg-accent-soft/40 p-5 sm:p-7"
           >
             <h2 className="text-lg font-black text-slate-900">
               Create a Study Circle
@@ -252,7 +252,7 @@ export default function StudyCircles() {
                   value={createName}
                   onChange={(e) => setCreateName(e.target.value)}
                   placeholder="MBC201 Revision"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-500"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent-soft0"
                 />
               </div>
               <div>
@@ -264,7 +264,7 @@ export default function StudyCircles() {
                   value={createCourseCode}
                   onChange={(e) => setCreateCourseCode(e.target.value)}
                   placeholder="MBC201"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-500"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent-soft0"
                 />
               </div>
             </div>
@@ -278,7 +278,7 @@ export default function StudyCircles() {
                 onChange={(e) => setCreateDescription(e.target.value)}
                 rows={3}
                 placeholder="What is this circle for?"
-                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-500"
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent-soft0"
               />
             </div>
 
@@ -294,7 +294,7 @@ export default function StudyCircles() {
                     onClick={() => setCreateVisibility(option)}
                     className={`rounded-xl border px-4 py-2.5 text-sm font-bold transition ${
                       createVisibility === option
-                        ? "border-violet-600 bg-violet-600 text-white"
+                        ? "border-accent bg-accent text-white"
                         : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                     }`}
                   >
@@ -318,7 +318,7 @@ export default function StudyCircles() {
             <button
               type="submit"
               disabled={creating}
-              className="w-fit rounded-xl bg-violet-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-violet-200 hover:bg-violet-700 disabled:opacity-60"
+              className="w-fit rounded-xl bg-accent px-5 py-3 text-sm font-black text-white shadow-lg shadow-accent-soft hover:bg-accent-hover disabled:opacity-60"
             >
               {creating ? "Creating..." : "Create Circle"}
             </button>
@@ -338,13 +338,13 @@ export default function StudyCircles() {
               value={joinCode}
               onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
               placeholder="e.g. K7P2QXN"
-              className="mt-1.5 w-full max-w-xs rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold uppercase tracking-wider outline-none focus:border-violet-500"
+              className="mt-1.5 w-full max-w-xs rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold uppercase tracking-wider outline-none focus:border-accent-soft0"
             />
           </div>
           <button
             type="submit"
             disabled={joiningByCode || !joinCode.trim()}
-            className="rounded-xl border border-violet-200 px-4 py-2.5 text-sm font-bold text-violet-700 hover:bg-violet-50 disabled:opacity-50"
+            className="rounded-xl border border-accent-soft px-4 py-2.5 text-sm font-bold text-accent-hover hover:bg-accent-soft disabled:opacity-50"
           >
             {joiningByCode ? "Joining..." : "Join Circle"}
           </button>
@@ -409,7 +409,7 @@ export default function StudyCircles() {
               onClick={() => setTab(t.key)}
               className={`border-b-2 px-4 py-2.5 text-sm font-bold transition ${
                 tab === t.key
-                  ? "border-violet-600 text-violet-700"
+                  ? "border-accent text-accent-hover"
                   : "border-transparent text-slate-500 hover:text-slate-800"
               }`}
             >
@@ -429,8 +429,11 @@ export default function StudyCircles() {
             </div>
           ) : myCircles.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
-                <Users className="h-8 w-8" />
+              <div
+                className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl"
+                style={{ color: "var(--accent)", backgroundColor: "var(--accent-soft)" }}
+              >
+                <UsersIcon size={32} />
               </div>
               <h2 className="mt-5 text-xl font-black text-slate-900">
                 No Study Circles yet
@@ -457,7 +460,7 @@ export default function StudyCircles() {
                 value={discoverSearch}
                 onChange={(e) => setDiscoverSearch(e.target.value)}
                 placeholder="Search by circle name or course code..."
-                className="w-full max-w-md rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-violet-500"
+                className="w-full max-w-md rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-accent-soft0"
               />
               <button
                 type="submit"
@@ -492,7 +495,7 @@ export default function StudyCircles() {
                           {circle.isMember ? (
                             <Link
                               to={`/circles/${circle.id}`}
-                              className="block w-full rounded-xl bg-violet-600 py-2.5 text-center text-xs font-bold text-white hover:bg-violet-700"
+                              className="block w-full rounded-xl bg-accent py-2.5 text-center text-xs font-bold text-white hover:bg-accent-hover"
                             >
                               Open Circle
                             </Link>
@@ -503,7 +506,7 @@ export default function StudyCircles() {
                           ) : (
                             <button
                               onClick={() => requestToJoin(circle.id)}
-                              className="block w-full rounded-xl border border-violet-200 py-2.5 text-center text-xs font-bold text-violet-700 hover:bg-violet-50"
+                              className="block w-full rounded-xl border border-accent-soft py-2.5 text-center text-xs font-bold text-accent-hover hover:bg-accent-soft"
                             >
                               Request to Join
                             </button>

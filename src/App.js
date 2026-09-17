@@ -14,7 +14,12 @@ import StudyCircles from "./pages/StudyCircles";
 import StudyCircleDetail from "./pages/StudyCircleDetail";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminOverview from "./pages/admin/AdminOverview";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminFiles from "./pages/admin/AdminFiles";
+import AdminCopyright from "./pages/admin/AdminCopyright";
+import AdminDeveloper from "./pages/admin/AdminDeveloper";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import SettingsLayout from "./pages/settings/SettingsLayout";
@@ -244,11 +249,17 @@ export default function App() {
           element={
             <ProtectedLayout>
               <AdminRoute>
-                <AdminDashboard />
+                <AdminLayout />
               </AdminRoute>
             </ProtectedLayout>
           }
-        />
+        >
+          <Route index element={<AdminOverview />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="files" element={<AdminFiles />} />
+          <Route path="copyright" element={<AdminCopyright />} />
+          <Route path="developer" element={<AdminDeveloper />} />
+        </Route>
 
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<Terms />} />

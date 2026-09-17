@@ -108,20 +108,20 @@ export default function Register() {
       <div className="min-h-screen bg-[#171238] px-4 py-6 sm:py-10">
         <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-md items-center justify-center">
         <div className="w-full overflow-hidden rounded-3xl bg-white shadow-2xl">
-          <div className="bg-gradient-to-br from-[#171238] via-[#2f2a8f] to-[#635bff] px-6 pb-7 pt-8 text-white">
+          <div className="bg-accent px-6 pb-7 pt-8 text-white">
             <div className="flex items-center justify-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-white/15 shadow-lg ring-1 ring-white/20">
                 <img src={study2gateLogo} alt="Study2Gate" className="h-full w-full object-cover" />
               </div>
               <h1 className="text-3xl font-black tracking-tight">
-                Study<span className="logo-mark text-blue-200">2Gate</span>
+                Study<span className="logo-mark text-accent-soft">2Gate</span>
               </h1>
             </div>
             <div className="mt-6 text-center">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-100">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent-soft">
                 Share. Learn. Succeed.
               </p>
-              <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-blue-50">
+              <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-accent-soft">
                 Your notes. Your flashcards. Your study space.
               </p>
             </div>
@@ -151,7 +151,7 @@ export default function Register() {
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Enter your full name"
                   autoComplete="name"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-accent-soft0 focus:bg-white focus:ring-4 focus:ring-accent-soft"
                 />
               </div>
 
@@ -164,7 +164,7 @@ export default function Register() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   autoComplete="email"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-accent-soft0 focus:bg-white focus:ring-4 focus:ring-accent-soft"
                 />
               </div>
 
@@ -184,7 +184,7 @@ export default function Register() {
                       ? "border-red-300 focus:border-red-500 focus:ring-red-100"
                       : usernameStatus === "available"
                         ? "border-green-300 focus:border-green-500 focus:ring-green-100"
-                        : "border-slate-200 focus:border-blue-500 focus:ring-blue-100"
+                        : "border-slate-200 focus:border-accent-soft0 focus:ring-accent-soft"
                   }`}
                 />
                 <p className={`mt-2 flex items-center gap-1 text-xs font-semibold ${
@@ -207,7 +207,7 @@ export default function Register() {
                   value={matricNumber}
                   onChange={(e) => setMatricNumber(e.target.value)}
                   placeholder="Enter your matriculation number"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-accent-soft0 focus:bg-white focus:ring-4 focus:ring-accent-soft"
                 />
               </div>
 
@@ -223,7 +223,7 @@ export default function Register() {
                     onFocus={() => setPasswordFocused(true)}
                     placeholder="Create a password"
                     autoComplete="new-password"
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-12 text-sm outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-12 text-sm outline-none focus:border-accent-soft0 focus:bg-white focus:ring-4 focus:ring-accent-soft"
                   />
                   <button
                     type="button"
@@ -250,7 +250,7 @@ export default function Register() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm your password"
                     autoComplete="new-password"
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-12 text-sm outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-12 text-sm outline-none focus:border-accent-soft0 focus:bg-white focus:ring-4 focus:ring-accent-soft"
                   />
                   <button
                     type="button"
@@ -269,19 +269,19 @@ export default function Register() {
                   required
                   checked={agreedToPrivacy}
                   onChange={(e) => setAgreedToPrivacy(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-[#635bff] focus:ring-[#635bff]"
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-accent focus:ring-accent"
                 />
                 <span>
                   I agree to the{" "}
-                  <Link to="/terms" target="_blank" className="font-bold text-[#635bff] hover:underline">
+                  <Link to="/terms" target="_blank" className="font-bold text-accent hover:underline">
                     Terms &amp; Conditions
                   </Link>
                   ,{" "}
-                  <Link to="/privacy" target="_blank" className="font-bold text-[#635bff] hover:underline">
+                  <Link to="/privacy" target="_blank" className="font-bold text-accent hover:underline">
                     Privacy Policy
                   </Link>{" "}
                   and{" "}
-                  <Link to="/copyright" target="_blank" className="font-bold text-[#635bff] hover:underline">
+                  <Link to="/copyright" target="_blank" className="font-bold text-accent hover:underline">
                     Copyright Policy
                   </Link>
                 </span>
@@ -296,7 +296,7 @@ export default function Register() {
                   !isPasswordValid(password) ||
                   !agreedToPrivacy
                 }
-                className="flex w-full items-center justify-center rounded-xl bg-[#635bff] py-3.5 text-sm font-black text-white shadow-lg shadow-blue-200 transition hover:bg-[#5148e8] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex w-full items-center justify-center rounded-xl bg-accent py-3.5 text-sm font-black text-white shadow-lg shadow-accent-soft transition hover:bg-accent-hover active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? <EqualizerLoader label="Creating account…" /> : "Create Account"}
               </button>
@@ -304,7 +304,7 @@ export default function Register() {
 
             <p className="mt-6 text-center text-sm text-slate-500">
               Already registered?{" "}
-              <Link to="/login" className="font-bold text-[#635bff] hover:underline">
+              <Link to="/login" className="font-bold text-accent hover:underline">
                 Log in
               </Link>
             </p>
@@ -319,7 +319,7 @@ export default function Register() {
             </a>
 
             <div className="mt-7 border-t border-slate-100 pt-5 text-center">
-              <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#635bff]">
+              <p className="text-[10px] font-black uppercase tracking-[0.12em] text-accent">
                 A STUDENT PLATFORM BY GODSENT OMOBUDE
               </p>
             </div>

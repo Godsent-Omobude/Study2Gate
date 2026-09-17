@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { X, ShieldAlert, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { X, AlertTriangle, CheckCircle2 } from "lucide-react";
 import api from "../api/api";
+import { AdminShieldIcon } from "./icons/AdminIcons";
 
 // Surfaces GET /admin/copyright/users/:id/history and
 // POST /admin/copyright/users/:id/actions — both existed on the backend
@@ -64,7 +65,7 @@ export default function UserCopyrightDrawer({ userId, onClose, onChanged }) {
       >
         <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
           <h3 className="font-black text-slate-800 flex items-center gap-2">
-            <ShieldAlert className="h-5 w-5 text-brand-blue" /> Copyright Standing
+            <AdminShieldIcon size={20} style={{ color: "var(--accent)" }} /> Copyright Standing
           </h3>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-slate-100"><X className="h-5 w-5" /></button>
         </div>
@@ -182,7 +183,7 @@ function Row({ label, value }) {
 
 function ActionButton({ children, onClick, busy, tone = "default" }) {
   const tones = {
-    default: "bg-brand-blue text-white hover:opacity-90",
+    default: "bg-accent text-white hover:opacity-90",
     warn: "bg-amber-100 text-amber-800 hover:bg-amber-200",
     danger: "bg-red-100 text-red-700 hover:bg-red-200",
   };

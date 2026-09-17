@@ -63,12 +63,12 @@ export default function NotificationBell() {
         <div className="fixed left-4 right-4 top-16 z-50 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:absolute sm:left-auto sm:right-0 sm:top-12 sm:w-[360px]">
           <div className="flex items-center justify-between border-b border-slate-100 p-4">
             <div><p className="font-black text-slate-900">Notifications</p><p className="text-xs text-slate-400">{unreadCount} unread</p></div>
-            <button type="button" onClick={markAllRead} disabled={!unreadCount} className="text-xs font-bold text-violet-600 disabled:text-slate-300">Mark all read</button>
+            <button type="button" onClick={markAllRead} disabled={!unreadCount} className="text-xs font-bold text-accent disabled:text-slate-300">Mark all read</button>
           </div>
           <div className="max-h-[420px] overflow-y-auto">
             {notifications.length === 0 ? <p className="p-8 text-center text-sm text-slate-400">You're all caught up.</p> : notifications.map((n) => (
-              <button key={n.id} type="button" onClick={() => markRead(n)} className={`block w-full border-b border-slate-100 p-4 text-left hover:bg-slate-50 ${n.read ? "bg-white" : "bg-violet-50/50"}`}>
-                <div className="flex items-start gap-3"><span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${n.read ? "bg-slate-200" : "bg-violet-600"}`} /><div className="min-w-0"><p className="text-sm font-bold text-slate-800">{n.title}</p><p className="mt-1 text-xs leading-5 text-slate-500">{n.body}</p><p className="mt-1 text-[10px] text-slate-400">{new Date(n.createdAt).toLocaleString()}</p></div></div>
+              <button key={n.id} type="button" onClick={() => markRead(n)} className={`block w-full border-b border-slate-100 p-4 text-left hover:bg-slate-50 ${n.read ? "bg-white" : "bg-accent-soft/50"}`}>
+                <div className="flex items-start gap-3"><span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${n.read ? "bg-slate-200" : "bg-accent"}`} /><div className="min-w-0"><p className="text-sm font-bold text-slate-800">{n.title}</p><p className="mt-1 text-xs leading-5 text-slate-500">{n.body}</p><p className="mt-1 text-[10px] text-slate-400">{new Date(n.createdAt).toLocaleString()}</p></div></div>
               </button>
             ))}
           </div>
