@@ -5,6 +5,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
 import Register from "./pages/Register";
+import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import GenerateFlashcards from "./pages/GenerateFlashcard";
 import MyFlashcards from "./pages/MyFlashcards";
@@ -73,7 +74,7 @@ function ProtectedLayout({ children }) {
 // visitor (or someone who just logged out) should never land on a red/green/etc.
 // login or registration screen just because the account they used last time
 // had a custom accent saved.
-const ALWAYS_BLUE_ROUTES = ["/login", "/register", "/accept-policy"];
+const ALWAYS_BLUE_ROUTES = ["/", "/login", "/register", "/accept-policy"];
 
 function AppearanceManager() {
   const location = useLocation();
@@ -135,14 +136,7 @@ export default function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/accept-policy" element={<AcceptCopyrightPolicy />} />
 
-        <Route
-          path="/"
-          element={
-            <ProtectedLayout>
-              <Dashboard />
-            </ProtectedLayout>
-          }
-        />
+        <Route path="/" element={<Home />} />
 
         <Route
           path="/generate-flashcards"

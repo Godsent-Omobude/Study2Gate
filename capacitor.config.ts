@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Study2Gate',
   webDir: 'build',
   server: {
-    url: 'https://studyshare-backend-1-vopy.onrender.com',
+    url: 'https://study-2gate.vercel.app',
     cleartext: true
   }
 };
