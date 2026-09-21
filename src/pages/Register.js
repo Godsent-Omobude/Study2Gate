@@ -105,9 +105,9 @@ export default function Register() {
   return (
     <>
       <BackendStatusBanner />
-      <div className="min-h-screen bg-[#171238] px-4 py-6 sm:py-10">
+      <div className="min-h-screen bg-brand-light px-4 py-6 sm:py-10">
         <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-md items-center justify-center">
-        <div className="w-full overflow-hidden rounded-3xl bg-white shadow-2xl">
+        <div className="w-full overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-900/5 ring-1 ring-slate-200">
           <div className="bg-accent px-6 pb-7 pt-8 text-white">
             <div className="flex items-center justify-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-white/15 shadow-lg ring-1 ring-white/20">
@@ -151,7 +151,7 @@ export default function Register() {
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Enter your full name"
                   autoComplete="name"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-accent-soft0 focus:bg-white focus:ring-4 focus:ring-accent-soft"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent-soft"
                 />
               </div>
 
@@ -164,7 +164,7 @@ export default function Register() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   autoComplete="email"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-accent-soft0 focus:bg-white focus:ring-4 focus:ring-accent-soft"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent-soft"
                 />
               </div>
 
@@ -184,7 +184,7 @@ export default function Register() {
                       ? "border-red-300 focus:border-red-500 focus:ring-red-100"
                       : usernameStatus === "available"
                         ? "border-green-300 focus:border-green-500 focus:ring-green-100"
-                        : "border-slate-200 focus:border-accent-soft0 focus:ring-accent-soft"
+                        : "border-slate-200 focus:border-accent focus:ring-accent-soft"
                   }`}
                 />
                 <p className={`mt-2 flex items-center gap-1 text-xs font-semibold ${
@@ -207,7 +207,7 @@ export default function Register() {
                   value={matricNumber}
                   onChange={(e) => setMatricNumber(e.target.value)}
                   placeholder="Enter your matriculation number"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-accent-soft0 focus:bg-white focus:ring-4 focus:ring-accent-soft"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent-soft"
                 />
               </div>
 
@@ -223,7 +223,7 @@ export default function Register() {
                     onFocus={() => setPasswordFocused(true)}
                     placeholder="Create a password"
                     autoComplete="new-password"
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-12 text-sm outline-none focus:border-accent-soft0 focus:bg-white focus:ring-4 focus:ring-accent-soft"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-12 text-sm outline-none focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent-soft"
                   />
                   <button
                     type="button"
@@ -250,7 +250,7 @@ export default function Register() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm your password"
                     autoComplete="new-password"
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-12 text-sm outline-none focus:border-accent-soft0 focus:bg-white focus:ring-4 focus:ring-accent-soft"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 pr-12 text-sm outline-none focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent-soft"
                   />
                   <button
                     type="button"

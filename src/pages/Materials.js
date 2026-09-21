@@ -160,7 +160,7 @@ export default function Materials() {
                 placeholder="Search title or course code..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent-soft0 lg:max-w-sm"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent lg:max-w-sm"
               />
               <Link
                 to="/upload"
@@ -248,7 +248,7 @@ export default function Materials() {
 
                     <div className="mt-3 flex items-center gap-1.5">
                       {isExternal ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-sky-50 px-2.5 py-1 text-[10px] font-black uppercase text-sky-700">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-accent-soft/60 px-2.5 py-1 text-[10px] font-black uppercase text-accent-hover">
                           <Link2 className="h-3 w-3" /> External Resource
                         </span>
                       ) : (
@@ -301,7 +301,7 @@ export default function Materials() {
                         <button
                           type="button"
                           onClick={() => handleOpenExternal(file.externalUrl)}
-                          className="inline-flex min-w-[108px] items-center justify-center gap-2 rounded-lg bg-sky-50 px-3 py-2 text-xs font-bold text-sky-700 hover:bg-sky-100"
+                          className="inline-flex min-w-[108px] items-center justify-center gap-2 rounded-lg bg-accent-soft/60 px-3 py-2 text-xs font-bold text-accent-hover hover:bg-accent-soft"
                         >
                           <ExternalLink className="h-3.5 w-3.5" /> Open Resource
                         </button>

@@ -1,5 +1,6 @@
 const ACCENT_THEME_COLORS = {
-  blue: "#1464d2",
+  blue: "#0b4a50",
+  royalblue: "#1464d2",
   red: "#dc2626",
   purple: "#7c3aed",
   green: "#16a34a",
@@ -30,7 +31,7 @@ export const applyDynamicManifest = (accentColor) => {
     display: "standalone",
     orientation: "portrait-primary",
     theme_color: themeColor,
-    background_color: "#ffffff",
+    background_color: "#f2f8f5",
   };
 
   const blob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });

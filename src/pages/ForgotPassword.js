@@ -25,11 +25,11 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07152f] px-4 py-10">
+    <div className="min-h-screen bg-brand-light px-4 py-10">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl items-center justify-center">
-        <div className="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl sm:p-10">
+        <div className="w-full max-w-md rounded-3xl bg-white p-7 shadow-xl shadow-slate-900/5 ring-1 ring-slate-200 sm:p-10">
           <div className="text-3xl font-black text-accent-hover">
-            Study<span className="text-slate-900">Share</span>
+            Study<span className="text-slate-900">2Gate</span>
           </div>
 
           <h1 className="mt-10 text-3xl font-black text-slate-900">Forgot password?</h1>
@@ -59,7 +59,7 @@ export default function ForgotPassword() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 autoComplete="email"
-                className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-accent-soft0 focus:bg-white"
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-accent focus:bg-white"
               />
             </div>
 

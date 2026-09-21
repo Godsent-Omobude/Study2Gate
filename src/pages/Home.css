@@ -38,6 +38,15 @@
 }
 
 /* Dark mode: the app sets html[data-theme] to "light" or "dark". */
+/* The dark teal S2G mark disappears on the dark background, so it sits on a light chip. */
+html[data-theme="dark"] .s2g-home .s2g-mark {
+  box-sizing: border-box;
+  padding: 5px 7px;
+  border-radius: 10px;
+  background-color: #f2f8f5;
+  background-origin: content-box;
+}
+
 html[data-theme="dark"] .s2g-home {
   --bg: #071C1F; --ink: #E8F5EF; --muted: #93B3AC;
   --frame: #1E4A4C; --shadow: rgba(0, 0, 0, .45);
@@ -100,7 +109,7 @@ html[data-theme="dark"] .s2g-home {
     place-items: center;
     padding: 22px 0 34px;
   }
-  .s2g-copy, .s2g-actions { padding-inline: 8px; }
+  .s2g-copy { padding-inline: 8px; }
   .s2g-copy { width: 100%; max-width: 30rem; }
   .s2g-actions { margin-top: 26px; display: grid; gap: 12px; }
 

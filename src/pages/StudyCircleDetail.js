@@ -130,7 +130,7 @@ function MaterialsTab({ circleId }) {
             value={pickerSearch}
             onChange={(e) => setPickerSearch(e.target.value)}
             placeholder="Search your materials library..."
-            className="mb-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-accent-soft0"
+            className="mb-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-accent"
           />
           <div className="max-h-64 space-y-2 overflow-y-auto">
             {filteredPickerFiles.length === 0 ? (
@@ -394,7 +394,7 @@ function MembersTab({ circleId, myRole, onRoleChanged }) {
               value={inviteUsername}
               onChange={(e) => setInviteUsername(e.target.value)}
               placeholder="username"
-              className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-accent-soft0"
+              className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-accent"
             />
             <button
               type="submit"

@@ -53,7 +53,7 @@ function RecentFiles({ files, onOpenFiles }) {
               <div className="flex items-center gap-2">
                 <p className="font-bold text-sm text-slate-800">{file.title || file.filename}</p>
                 {file.sourceType === "EXTERNAL_LINK" && (
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-sky-100 text-sky-700 text-[9px] font-bold uppercase">
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-accent-soft text-accent-hover text-[9px] font-bold uppercase">
                     <Link2 className="h-2.5 w-2.5" /> External
                   </span>
                 )}

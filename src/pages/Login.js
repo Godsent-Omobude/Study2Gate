@@ -83,9 +83,9 @@ export default function Login() {
   return (
     <>
       <BackendStatusBanner />
-      <div className="min-h-screen bg-[#171238] px-4 py-10">
+      <div className="min-h-screen bg-brand-light px-4 py-10">
         <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl items-center justify-center">
-        <div className="grid w-full overflow-hidden rounded-3xl bg-white shadow-2xl lg:grid-cols-2">
+        <div className="grid w-full overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-900/5 ring-1 ring-slate-200 lg:grid-cols-2">
           <div className="hidden bg-accent p-12 text-white lg:block">
             <div className="flex items-center gap-3">
               <img
@@ -93,8 +93,8 @@ export default function Login() {
                 alt="Study2Gate logo"
                 className="h-12 w-12 rounded-2xl object-contain"
               />
-              <div className="text-3xl font-black tracking-tight">
-                Study<span className="logo-mark text-accent-soft">Share</span>
+              <div className="font-display text-3xl font-black tracking-tight">
+                Study<span className="logo-mark text-accent-soft">2Gate</span>
               </div>
             </div>
             <div className="mt-24">
@@ -118,7 +118,7 @@ export default function Login() {
                   alt="Study2Gate logo"
                   className="h-14 w-14 rounded-2xl object-contain"
                 />
-                <span className="text-2xl font-black tracking-tight text-slate-900">
+                <span className="font-display text-2xl font-black tracking-tight text-slate-900">
                   Study<span className="logo-mark text-accent">2Gate</span>
                 </span>
               </div>
@@ -144,7 +144,7 @@ export default function Login() {
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Enter your username"
                     autoComplete="username"
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-accent-soft0 focus:bg-white"
+                    className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-accent focus:bg-white"
                   />
                 </div>
 
@@ -158,7 +158,7 @@ export default function Login() {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
                       autoComplete="current-password"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 outline-none focus:border-accent-soft0 focus:bg-white"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 outline-none focus:border-accent focus:bg-white"
                     />
                     <button
                       type="button"

@@ -2,12 +2,15 @@ import api from "../../api/api";
 import { useSettings, applyAppearance } from "./SettingsContext";
 
 const themes = ["light", "dark", "system"];
+// "blue" is the stored id of the default accent (kept so saved settings and the
+// backend keep working); it is now the Study2Gate teal.
 const accents = [
-  { id: "blue", label: "Blue", symbol: "🔵" },
-  { id: "red", label: "Red", symbol: "🔴" },
-  { id: "purple", label: "Purple", symbol: "🟣" },
-  { id: "green", label: "Green", symbol: "🟢" },
-  { id: "yellow", label: "Yellow", symbol: "🟡" },
+  { id: "blue", label: "Teal", color: "#0b4a50" },
+  { id: "royalblue", label: "Blue", color: "#1464d2" },
+  { id: "red", label: "Red", color: "#dc2626" },
+  { id: "purple", label: "Purple", color: "#7c3aed" },
+  { id: "green", label: "Green", color: "#16a34a" },
+  { id: "yellow", label: "Yellow", color: "#ca8a04" },
 ];
 
 export default function SettingsAppearance() {
@@ -47,7 +50,7 @@ export default function SettingsAppearance() {
 
       <div className="mt-6">
         <p className="mb-3 text-sm font-bold text-slate-700">Accent colour</p>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {accents.map((accent) => (
             <button
               key={accent.id}
@@ -58,7 +61,10 @@ export default function SettingsAppearance() {
                   : "border-slate-200 text-slate-600"
               }`}
             >
-              <span className="mr-1">{accent.symbol}</span>
+              <span
+                className="mr-2 inline-block h-3 w-3 rounded-full align-middle ring-1 ring-slate-300"
+                style={{ backgroundColor: accent.color }}
+              />
               {accent.label}
               {accent.id === "blue" && (
                 <span className="ml-1 text-xs text-slate-400">(default)</span>

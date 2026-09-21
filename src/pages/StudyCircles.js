@@ -252,7 +252,7 @@ export default function StudyCircles() {
                   value={createName}
                   onChange={(e) => setCreateName(e.target.value)}
                   placeholder="MBC201 Revision"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent-soft0"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent"
                 />
               </div>
               <div>
@@ -264,7 +264,7 @@ export default function StudyCircles() {
                   value={createCourseCode}
                   onChange={(e) => setCreateCourseCode(e.target.value)}
                   placeholder="MBC201"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent-soft0"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent"
                 />
               </div>
             </div>
@@ -278,7 +278,7 @@ export default function StudyCircles() {
                 onChange={(e) => setCreateDescription(e.target.value)}
                 rows={3}
                 placeholder="What is this circle for?"
-                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent-soft0"
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent"
               />
             </div>
 
@@ -338,7 +338,7 @@ export default function StudyCircles() {
               value={joinCode}
               onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
               placeholder="e.g. K7P2QXN"
-              className="mt-1.5 w-full max-w-xs rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold uppercase tracking-wider outline-none focus:border-accent-soft0"
+              className="mt-1.5 w-full max-w-xs rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold uppercase tracking-wider outline-none focus:border-accent"
             />
           </div>
           <button
@@ -460,7 +460,7 @@ export default function StudyCircles() {
                 value={discoverSearch}
                 onChange={(e) => setDiscoverSearch(e.target.value)}
                 placeholder="Search by circle name or course code..."
-                className="w-full max-w-md rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-accent-soft0"
+                className="w-full max-w-md rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-accent"
               />
               <button
                 type="submit"

@@ -127,7 +127,7 @@ export default function AdminFiles() {
                   {file.type || file.mimetype || "FILE"}
                 </span>
                 {file.sourceType === "EXTERNAL_LINK" ? (
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-sky-100 text-sky-700 text-[10px] font-bold uppercase">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-accent-soft text-accent-hover text-[10px] font-bold uppercase">
                     <Link2 className="h-3 w-3" /> External
                   </span>
                 ) : (

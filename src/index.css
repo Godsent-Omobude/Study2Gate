@@ -6,6 +6,16 @@ body {
   @apply bg-brand-light text-slate-800 font-sans antialiased;
 }
 
+/* Headlines use the same display face as the home page. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
 
 /* Study2Gate v1 global appearance system.
    Two representations of the same color are kept side by side, at
@@ -21,17 +31,19 @@ body {
    `bg-accent`, `text-accent`, `border-accent-soft`) or these variables —
    never a fixed color name — so there is nothing left to override here. */
 :root {
-  --accent: #1464d2;
-  --accent-soft: #e8f1ff;
-  --accent-hover: #0d55b8;
-  --accent-rgb: 20 100 210;
-  --accent-soft-rgb: 232 241 255;
-  --accent-hover-rgb: 13 85 184;
-  --page-bg: #f8fafc;
+  /* Default accent ("blue" in settings) is the Study2Gate teal from the logo. */
+  --accent: #0b4a50;
+  --accent-soft: #d9eee3;
+  --accent-hover: #083b40;
+  --accent-rgb: 11 74 80;
+  --accent-soft-rgb: 217 238 227;
+  --accent-hover-rgb: 8 59 64;
+  --page-bg: #f2f8f5;
   --surface: #ffffff;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
+  --text-main: #0a2f33;
+  --text-muted: #4a6866;
+  --border: #d0e3d9;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
 }
 
 html[data-accent="red"] {
@@ -66,15 +78,47 @@ html[data-accent="yellow"] {
   --accent-soft-rgb: 254 249 195;
   --accent-hover-rgb: 161 98 7;
 }
+/* Blue, for people who prefer it. Its id is "royalblue" because "blue" is the
+   stored id of the default teal accent (kept so existing settings keep working). */
+html[data-accent="royalblue"] {
+  --accent: #1464d2;
+  --accent-soft: #e8f1ff;
+  --accent-hover: #0d55b8;
+  --accent-rgb: 20 100 210;
+  --accent-soft-rgb: 232 241 255;
+  --accent-hover-rgb: 13 85 184;
+}
 
 /* Theme */
 html[data-theme="dark"] {
   color-scheme: dark;
-  --page-bg: #0f172a;
-  --surface: #111827;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border: #334155;
+  --page-bg: #071c1f;
+  --surface: #0c2a2d;
+  --text-main: #e8f5ef;
+  --text-muted: #93b3ac;
+  --border: #1e4a4c;
+}
+/* Default accent in dark mode: the teal is too dark to read on dark surfaces, so
+   it switches to the lighter leaf green from the logo (same as the home page). */
+html[data-theme="dark"][data-accent="royalblue"] {
+  --accent: #3b82f6;
+  --accent-soft: #14284a;
+  --accent-hover: #60a5fa;
+  --accent-rgb: 59 130 246;
+  --accent-soft-rgb: 20 40 74;
+  --accent-hover-rgb: 96 165 250;
+}
+html[data-theme="dark"][data-accent="blue"] {
+  --accent: #5cc495;
+  --accent-soft: #12403f;
+  --accent-hover: #7bd9a6;
+  --accent-rgb: 92 196 149;
+  --accent-soft-rgb: 18 64 63;
+  --accent-hover-rgb: 123 217 166;
+}
+/* Buttons on the light green need dark text to stay readable. */
+html[data-theme="dark"][data-accent="blue"] .bg-accent {
+  color: #06282a;
 }
 html[data-theme="dark"] body {
   background: var(--page-bg) !important;
@@ -83,31 +127,72 @@ html[data-theme="dark"] body {
 html[data-theme="dark"] .bg-white {
   background-color: var(--surface) !important;
 }
+html[data-theme="dark"] .bg-white\/95 {
+  background-color: rgb(12 42 45 / 0.95) !important;
+}
 html[data-theme="dark"] .bg-slate-50,
 html[data-theme="dark"] .bg-brand-light {
   background-color: var(--page-bg) !important;
 }
+html[data-theme="dark"] .bg-slate-100 {
+  background-color: #123538 !important;
+}
 html[data-theme="dark"] .text-slate-900,
 html[data-theme="dark"] .text-slate-800 {
-  color: #f8fafc !important;
+  color: #e8f5ef !important;
 }
 html[data-theme="dark"] .text-slate-700 {
-  color: #e2e8f0 !important;
+  color: #d3e6de !important;
 }
 html[data-theme="dark"] .text-slate-600,
 html[data-theme="dark"] .text-slate-500 {
-  color: #94a3b8 !important;
+  color: #93b3ac !important;
 }
 html[data-theme="dark"] .border-slate-100,
 html[data-theme="dark"] .border-slate-200 {
   border-color: var(--border) !important;
 }
+/* Big accent panels (page headers, login side panel) stay deep teal in dark mode
+   instead of a large block of bright green; buttons keep the light green. */
+html[data-theme="dark"][data-accent="blue"] section.bg-accent,
+html[data-theme="dark"][data-accent="blue"] div.bg-accent.p-12 {
+  background-color: #0f3f42;
+  color: #e8f5ef;
+}
+html[data-theme="dark"][data-accent="blue"] section.bg-accent .text-accent-soft,
+html[data-theme="dark"][data-accent="blue"] div.bg-accent.p-12 .text-accent-soft {
+  color: #a9dcc5;
+}
+/* Status colours (warnings, errors, success): their light tints are unreadable on
+   dark surfaces, so they switch to deep tints with lighter text. */
+html[data-theme="dark"] .bg-amber-50 { background-color: #2a230f; }
+html[data-theme="dark"] .bg-amber-100 { background-color: #3a2f12; }
+html[data-theme="dark"] .border-amber-200 { border-color: #5a4713; }
+html[data-theme="dark"] .text-amber-600,
+html[data-theme="dark"] .text-amber-700 { color: #fcd34d; }
+html[data-theme="dark"] .bg-orange-50 { background-color: #2d1a0c; }
+html[data-theme="dark"] .border-orange-200 { border-color: #6b3a12; }
+html[data-theme="dark"] .text-orange-700 { color: #fdba74; }
+html[data-theme="dark"] .bg-red-50 { background-color: #2c1518; }
+html[data-theme="dark"] .bg-red-100 { background-color: #3b1a1e; }
+html[data-theme="dark"] .border-red-100,
+html[data-theme="dark"] .border-red-200 { border-color: #6b262c; }
+html[data-theme="dark"] .text-red-600,
+html[data-theme="dark"] .text-red-700 { color: #fca5a5; }
+html[data-theme="dark"] .bg-green-50,
+html[data-theme="dark"] .bg-emerald-50 { background-color: #0f2b21; }
+html[data-theme="dark"] .bg-green-100,
+html[data-theme="dark"] .bg-emerald-100 { background-color: #14382b; }
+html[data-theme="dark"] .border-green-200,
+html[data-theme="dark"] .border-emerald-200 { border-color: #1f6a4a; }
+html[data-theme="dark"] .text-green-700,
+html[data-theme="dark"] .text-emerald-700 { color: #86efac; }
 html[data-theme="dark"] input,
 html[data-theme="dark"] textarea,
 html[data-theme="dark"] select {
-  background-color: #1e293b !important;
-  color: #f8fafc !important;
-  border-color: #475569 !important;
+  background-color: #0f3336 !important;
+  color: #e8f5ef !important;
+  border-color: #245456 !important;
 }
 
 

@@ -74,7 +74,7 @@ function ProtectedLayout({ children }) {
 // visitor (or someone who just logged out) should never land on a red/green/etc.
 // login or registration screen just because the account they used last time
 // had a custom accent saved.
-const ALWAYS_BLUE_ROUTES = ["/", "/login", "/register", "/accept-policy"];
+const ALWAYS_BLUE_ROUTES = ["/login", "/register", "/accept-policy"];
 
 function AppearanceManager() {
   const location = useLocation();
@@ -83,9 +83,14 @@ function AppearanceManager() {
     const apply = () => {
       const theme = localStorage.getItem("theme") || "system";
       const savedAccent = localStorage.getItem("accentColor") || "blue";
-      const accent = ALWAYS_BLUE_ROUTES.includes(location.pathname)
-        ? "blue"
-        : savedAccent;
+      // "/" is the public landing page only while signed out; signed in, it is
+      // the Dashboard and should use the user's own accent colour.
+      const signedOutHome =
+        location.pathname === "/" && localStorage.getItem("isLoggedIn") !== "true";
+      const accent =
+        ALWAYS_BLUE_ROUTES.includes(location.pathname) || signedOutHome
+          ? "blue"
+          : savedAccent;
 
       // The preference itself can be "system" — but the DOM attribute the
       // CSS reads must be an actual "light" or "dark" (see utils/theme.js).
@@ -112,6 +117,22 @@ function AppearanceManager() {
   return null;
 }
 
+// "/" is two things: the public landing page for signed-out visitors, and the
+// Dashboard for signed-in users (Login, the sidebar's Dashboard link, the PWA
+// start URL and several redirects all point at "/"). Deciding here keeps every
+// one of those working without changing them.
+function HomeRoute() {
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+  if (!isLoggedIn) return <Home />;
+
+  return (
+    <ProtectedLayout>
+      <Dashboard />
+    </ProtectedLayout>
+  );
+}
+
 function PlaceholderPage({ title, description }) {
   return (
     <main className="min-h-[calc(100vh-5rem)] bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
@@ -136,7 +157,7 @@ export default function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/accept-policy" element={<AcceptCopyrightPolicy />} />
 
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<HomeRoute />} />
 
         <Route
           path="/generate-flashcards"

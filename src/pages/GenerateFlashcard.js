@@ -274,7 +274,7 @@ export default function GenerateFlashcards() {
                         disabled={pdfInfoLoading || !totalPages}
                         value={startPage}
                         onChange={(e) => handleStartPageChange(e.target.value)}
-                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-accent-soft0 focus:ring-4 focus:ring-accent-soft disabled:bg-slate-100 disabled:text-slate-400"
+                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-accent focus:ring-4 focus:ring-accent-soft disabled:bg-slate-100 disabled:text-slate-400"
                       />
                     </div>
                     <div>
@@ -292,7 +292,7 @@ export default function GenerateFlashcards() {
                         disabled={pdfInfoLoading || !totalPages}
                         value={endPage}
                         onChange={(e) => handleEndPageChange(e.target.value)}
-                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-accent-soft0 focus:ring-4 focus:ring-accent-soft disabled:bg-slate-100 disabled:text-slate-400"
+                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-accent focus:ring-4 focus:ring-accent-soft disabled:bg-slate-100 disabled:text-slate-400"
                       />
                     </div>
                   </div>
@@ -313,7 +313,7 @@ export default function GenerateFlashcards() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Biochemistry Week 1"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-accent-soft0 focus:ring-4 focus:ring-accent-soft"
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-accent focus:ring-4 focus:ring-accent-soft"
                 />
               </div>
 
@@ -325,7 +325,7 @@ export default function GenerateFlashcards() {
                   <select
                     value={count}
                     onChange={(e) => setCount(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent-soft0"
+                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent"
                   >
                     {[5, 10, 20, 30, 50, 75, 100].map((value) => (
                       <option key={value} value={value}>
@@ -342,7 +342,7 @@ export default function GenerateFlashcards() {
                   <select
                     value={difficulty}
                     onChange={(e) => setDifficulty(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent-soft0"
+                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-accent"
                   >
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>

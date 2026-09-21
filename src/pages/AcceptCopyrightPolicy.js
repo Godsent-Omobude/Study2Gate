@@ -62,9 +62,9 @@ export default function AcceptCopyrightPolicy() {
   };
 
   return (
-    <div className="min-h-screen bg-[#171238] px-4 py-10">
+    <div className="min-h-screen bg-brand-light px-4 py-10">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-xl items-center justify-center">
-        <div className="w-full overflow-hidden rounded-3xl bg-white shadow-2xl">
+        <div className="w-full overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-900/5 ring-1 ring-slate-200">
           <div className="bg-accent px-6 pb-7 pt-8 text-center text-white">
             <div className="flex items-center justify-center gap-3">
               <img src={logo} alt="Study2Gate" className="h-12 w-12 rounded-2xl object-contain" />

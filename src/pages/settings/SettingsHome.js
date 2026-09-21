@@ -12,7 +12,8 @@ import {
 import { useSettings } from "./SettingsContext";
 
 const ACCENT_LABELS = {
-  blue: "Blue",
+  blue: "Teal",
+  royalblue: "Blue",
   red: "Red",
   purple: "Purple",
   green: "Green",
@@ -118,7 +119,7 @@ export default function SettingsHome() {
           icon={<Palette size={18} />}
           label="Appearance"
           hint={`${settings.theme === "system" ? "System" : settings.theme}, ${
-            ACCENT_LABELS[settings.accentColor] || "Blue"
+            ACCENT_LABELS[settings.accentColor] || "Teal"
           }`}
         />
         <Row

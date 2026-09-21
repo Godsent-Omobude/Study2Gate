@@ -504,7 +504,7 @@ export default function Dashboard() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Resource title"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent-soft0 focus:bg-white"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent focus:bg-white"
               />
 
               <input
@@ -512,13 +512,13 @@ export default function Dashboard() {
                 value={courseCode}
                 onChange={(e) => setCourseCode(e.target.value)}
                 placeholder="Course code e.g. MBC201"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent-soft0 focus:bg-white"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent focus:bg-white"
               />
 
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent-soft0 focus:bg-white"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent focus:bg-white"
               >
                 <option value="Material">Lecture Material</option>
                 <option value="Past Question">Past Question Paper</option>
@@ -529,7 +529,7 @@ export default function Dashboard() {
                 onChange={(e) => setDescription(e.target.value)}
                 rows="3"
                 placeholder="Short description"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent-soft0 focus:bg-white"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent focus:bg-white"
               />
 
               {sourceType === "UPLOAD" ? (
@@ -576,7 +576,7 @@ export default function Dashboard() {
                       value={externalUrl}
                       onChange={(e) => setExternalUrl(e.target.value)}
                       placeholder="https://example.edu.ng/resource.pdf"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm outline-none focus:border-accent-soft0 focus:bg-white"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm outline-none focus:border-accent focus:bg-white"
                     />
                   </div>
                   <p className="mt-1.5 text-[11px] text-slate-400">
@@ -590,7 +590,7 @@ export default function Dashboard() {
                   type="checkbox"
                   checked={copyrightConfirmed}
                   onChange={(e) => setCopyrightConfirmed(e.target.checked)}
-                  className="mt-1 h-4 w-4 rounded border-slate-300 text-accent focus:ring-accent-soft0"
+                  className="mt-1 h-4 w-4 rounded border-slate-300 text-accent focus:ring-accent"
                 />
                 <span className="text-xs leading-5 text-slate-600">
                   {sourceType === "UPLOAD" ? (
@@ -704,7 +704,7 @@ export default function Dashboard() {
               placeholder="Search title or course code..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent-soft0 lg:max-w-sm"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-accent lg:max-w-sm"
             />
           </div>
 
@@ -778,7 +778,7 @@ export default function Dashboard() {
 
                     <div className="mt-3 flex items-center gap-1.5">
                       {isExternal ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-sky-50 px-2.5 py-1 text-[10px] font-black uppercase text-sky-700">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-accent-soft/60 px-2.5 py-1 text-[10px] font-black uppercase text-accent-hover">
                           <Link2 className="h-3 w-3" /> External Resource
                         </span>
                       ) : (
@@ -812,7 +812,7 @@ export default function Dashboard() {
                           <button
                             type="button"
                             onClick={() => handleOpenExternal(file.externalUrl)}
-                            className="inline-flex min-w-[108px] items-center justify-center gap-2 rounded-lg bg-sky-50 px-3 py-2 text-xs font-bold text-sky-700 hover:bg-sky-100"
+                            className="inline-flex min-w-[108px] items-center justify-center gap-2 rounded-lg bg-accent-soft/60 px-3 py-2 text-xs font-bold text-accent-hover hover:bg-accent-soft"
                           >
                             <ExternalLink className="h-3.5 w-3.5" /> Open Resource
                           </button>
