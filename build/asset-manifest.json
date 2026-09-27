@@ -1,14 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.a7216b9d.css",
-    "main.js": "/static/js/main.dc7f8d09.js",
-    "static/media/study2gate-logo.png": "/static/media/study2gate-logo.b194edd6542557cf1d26.png",
+    "main.css": "/static/css/main.31573d1b.css",
+    "main.js": "/static/js/main.c4c44915.js",
+    "static/media/study2gate-logo.png": "/static/media/study2gate-logo.94f14e915d6d6e2136e0.png",
+    "static/media/study2gate-logo-transparent.png": "/static/media/study2gate-logo-transparent.3f78e2e282d0608fbac0.png",
     "index.html": "/index.html",
-    "main.a7216b9d.css.map": "/static/css/main.a7216b9d.css.map",
-    "main.dc7f8d09.js.map": "/static/js/main.dc7f8d09.js.map"
+    "main.31573d1b.css.map": "/static/css/main.31573d1b.css.map",
+    "main.c4c44915.js.map": "/static/js/main.c4c44915.js.map"
   },
   "entrypoints": [
-    "static/css/main.a7216b9d.css",
-    "static/js/main.dc7f8d09.js"
+    "static/css/main.31573d1b.css",
+    "static/js/main.c4c44915.js"
   ]
 }

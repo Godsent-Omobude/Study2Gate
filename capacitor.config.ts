@@ -7,6 +7,16 @@ const config: CapacitorConfig = {
   server: {
     url: 'https://study-2gate.vercel.app',
     cleartext: true
+  },
+  android: {
+    adjustMarginsForEdgeToEdge: 'force'
+  },
+  plugins: {
+    StatusBar: {
+      overlaysWebView: false,
+      style: 'DARK',
+      backgroundColor: '#0d1f1c'
+    }
   }
 };
 

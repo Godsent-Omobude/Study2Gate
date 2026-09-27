@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -147,6 +148,7 @@ function PlaceholderPage({ title, description }) {
 export default function App() {
   return (
     <BrowserRouter>
+      <Analytics />
       <AppearanceManager />
       <SessionGuard />
       <Routes>
