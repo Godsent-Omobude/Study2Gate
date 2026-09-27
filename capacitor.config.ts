@@ -8,9 +8,7 @@ const config: CapacitorConfig = {
     url: 'https://study-2gate.vercel.app',
     cleartext: true
   },
-  android: {
-    adjustMarginsForEdgeToEdge: 'force'
-  },
+
   plugins: {
     StatusBar: {
       overlaysWebView: false,
