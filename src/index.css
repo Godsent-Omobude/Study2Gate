@@ -273,6 +273,65 @@ html[data-theme="dark"] select {
 }
 
 
+
+/* Compact only the protected-app navbar on narrow screens. The desktop web
+   layout keeps its existing Tailwind sizing and spacing unchanged. The
+   right safe-area inset is applied only inside the mobile breakpoint so
+   Android edge-to-edge cannot push the profile control off-screen. */
+@media (max-width: 639px) {
+  .study2gate-navbar {
+    padding-left: max(8px, env(safe-area-inset-left, 0px));
+    padding-right: max(8px, env(safe-area-inset-right, 0px));
+  }
+
+  .study2gate-navbar__brand-group {
+    gap: 6px;
+  }
+
+  .study2gate-navbar__menu,
+  .study2gate-navbar__profile {
+    width: 40px;
+    height: 40px;
+  }
+
+  .study2gate-navbar__brand {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .study2gate-navbar__actions {
+    gap: 6px;
+  }
+}
+
+/* Very narrow phones need a little more room for the complete action group. */
+@media (max-width: 360px) {
+  .study2gate-navbar__brand-group,
+  .study2gate-navbar__actions {
+    gap: 4px;
+  }
+
+  .study2gate-navbar__actions {
+    margin-left: 4px;
+  }
+
+  .study2gate-navbar__brand {
+    font-size: 18px;
+  }
+
+  .study2gate-navbar__actions > div:first-child button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .study2gate-navbar__actions > div:nth-child(2) {
+    height: 36px;
+    padding-left: 8px;
+    padding-right: 8px;
+    gap: 4px;
+  }
+}
+
 /* Mobile app-like viewport behaviour. Keep the document inside the device width
    while allowing intentionally scrollable content (such as material cards) to
    manage its own horizontal overflow. */
