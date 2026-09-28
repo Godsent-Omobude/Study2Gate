@@ -61,9 +61,15 @@ export default function CircleChat({ circleId, myRole, onAccessRevoked }) {
     const onUnpinned = (event) => { setMessages((current) => current.map((m) => m.id === event.messageId ? { ...m, isPinned: false } : m)); loadPinned(); };
     const onRemoved = () => onAccessRevoked?.();
 
+    const onDisconnect = () => setConnectionState("offline");
+    const onConnectError = (err) => {
+      setConnectionState("error");
+      setError(err.message || "Real-time connection failed.");
+    };
+
     socket.on("connect", join);
-    socket.on("disconnect", () => setConnectionState("offline"));
-    socket.on("connect_error", (err) => { setConnectionState("error"); setError(err.message || "Real-time connection failed."); });
+    socket.on("disconnect", onDisconnect);
+    socket.on("connect_error", onConnectError);
     socket.on("message:new", addMessage);
     socket.on("message:edited", onEdited);
     socket.on("message:deleted", onDeleted);
@@ -72,7 +78,7 @@ export default function CircleChat({ circleId, myRole, onAccessRevoked }) {
     socket.on("circle:access-revoked", onRemoved);
     if (socket.connected) join();
 
-    return () => { socket.emit("circle:leave", circleId); socket.off("connect", join); socket.off("disconnect"); socket.off("connect_error"); socket.off("message:new", addMessage); socket.off("message:edited", onEdited); socket.off("message:deleted", onDeleted); socket.off("message:pinned", onPinned); socket.off("message:unpinned", onUnpinned); socket.off("circle:access-revoked", onRemoved); socketRef.current = null; };
+    return () => { socket.emit("circle:leave", circleId); socket.off("connect", join); socket.off("disconnect", onDisconnect); socket.off("connect_error", onConnectError); socket.off("message:new", addMessage); socket.off("message:edited", onEdited); socket.off("message:deleted", onDeleted); socket.off("message:pinned", onPinned); socket.off("message:unpinned", onUnpinned); socket.off("circle:access-revoked", onRemoved); socketRef.current = null; };
   }, [circleId, loadMessages, loadPinned, onAccessRevoked]);
 
   useEffect(() => {

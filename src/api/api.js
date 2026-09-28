@@ -1,4 +1,5 @@
 import axios from "axios";
+import { disconnectStudySocket } from "./socket";
 
 const normalizeApiBaseUrl = (url) => {
   const trimmed = String(url || "").trim().replace(/\/$/, "");
@@ -30,6 +31,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      // Stop any shared Socket.IO connection authenticated with the expired
+      // session before redirecting to login.
+      disconnectStudySocket();
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("fullName");
 

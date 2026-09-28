@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import api from "../api/api";
+import { disconnectStudySocket } from "../api/socket";
 import usePushMessaging from "../hooks/usePushMessaging";
 import useProfilePicture from "../hooks/useProfilePicture";
 import { unregisterPushDevice } from "../api/pushNotifications";
@@ -76,6 +77,10 @@ export default function Sidebar({ open, onClose }) {
     // without this call the cookie would keep authenticating requests
     // even after localStorage.clear().
     Promise.allSettled([api.post("/auth/logout"), cleanupPush]).finally(() => {
+      // The Socket.IO connection is authenticated independently from React
+      // state. Close it before leaving the authenticated area so the old
+      // session cannot continue receiving real-time events after logout.
+      disconnectStudySocket();
       localStorage.clear();
       navigate("/login");
     });

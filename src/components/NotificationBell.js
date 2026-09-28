@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell } from "lucide-react";
 import api from "../api/api";
-import { createStudySocket, disconnectStudySocket } from "../api/socket";
+import { createStudySocket } from "../api/socket";
 
 export default function NotificationBell() {
   const [open, setOpen] = useState(false);
@@ -33,7 +33,7 @@ export default function NotificationBell() {
     });
     const close = (event) => { if (!ref.current?.contains(event.target)) setOpen(false); };
     document.addEventListener("mousedown", close);
-    return () => { disconnectStudySocket(); document.removeEventListener("mousedown", close); };
+    return () => { document.removeEventListener("mousedown", close); };
   }, []);
 
   const markRead = async (notification) => {

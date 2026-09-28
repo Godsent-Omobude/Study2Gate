@@ -10,20 +10,35 @@ let socketInstance = null;
 
 export const createStudySocket = () => {
   if (socketInstance) return socketInstance;
-  socketInstance = io(normalizeSocketUrl(process.env.REACT_APP_API_URL || "https://studyshare-backend-1-vopy.onrender.com"), {
+
+  const isProduction = process.env.NODE_ENV === "production";
+  const socketUrl = isProduction
+    ? window.location.origin
+    : normalizeSocketUrl(
+        process.env.REACT_APP_API_URL || "https://studyshare-backend-1-vopy.onrender.com"
+      );
+
+  socketInstance = io(socketUrl, {
+    // Production Socket.IO goes through the same Vercel origin as the REST
+    // API. This keeps the httpOnly auth cookie first-party and avoids sending
+    // the browser directly to Render, where that cookie is not scoped.
     withCredentials: true,
-    transports: ["websocket", "polling"],
+    // Vercel's external rewrite reliably proxies HTTP polling. Keep polling
+    // in production rather than attempting a WebSocket upgrade that the
+    // frontend hosting layer does not terminate itself. Local development
+    // can use the normal WebSocket-first transport.
+    transports: isProduction ? ["polling"] : ["websocket", "polling"],
     reconnection: true,
     reconnectionAttempts: Infinity,
     reconnectionDelay: 1000,
     reconnectionDelayMax: 5000,
   });
+
   return socketInstance;
 };
 
 export const disconnectStudySocket = () => {
-  if (socketInstance) {
-    socketInstance.disconnect();
-    socketInstance = null;
-  }
+  if (!socketInstance) return;
+  socketInstance.disconnect();
+  socketInstance = null;
 };
