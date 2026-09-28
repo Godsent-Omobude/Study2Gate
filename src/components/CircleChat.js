@@ -51,6 +51,7 @@ export default function CircleChat({ circleId, myRole, onAccessRevoked }) {
       socket.emit("circle:join", circleId, (result) => {
         if (!result?.ok) { setConnectionState("error"); setError(result?.message || "Unable to join the real-time chat."); return; }
         setConnectionState("connected");
+        setError("");
         if (lastIdRef.current) loadMessages(lastIdRef.current);
       });
     };
@@ -82,18 +83,49 @@ export default function CircleChat({ circleId, myRole, onAccessRevoked }) {
   }, [circleId, loadMessages, loadPinned, onAccessRevoked]);
 
   useEffect(() => {
+    if (connectionState === "connected") return undefined;
+    const poll = setInterval(() => { loadMessages(lastIdRef.current || undefined); loadPinned(); }, 5000);
+    return () => clearInterval(poll);
+  }, [connectionState, loadMessages, loadPinned]);
+
+  useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 30000);
     return () => clearInterval(timer);
   }, []);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
-  const emitAction = (event, payload, successMessage) => new Promise((resolve, reject) => {
+  const restFallback = async (event, payload) => {
+    const base = `/circles/${payload.circleId}/messages`;
+    let response;
+    if (event === "message:send") response = await api.post(base, { content: payload.content });
+    else if (event === "message:edit") response = await api.patch(`${base}/${payload.messageId}`, { content: payload.content });
+    else if (event === "message:delete") response = await api.delete(`${base}/${payload.messageId}`);
+    else if (event === "message:pin") response = await api.post(`${base}/${payload.messageId}/pin`);
+    else if (event === "message:unpin") response = await api.delete(`${base}/${payload.messageId}/pin`);
+    else throw new Error("Unsupported action.");
+    const data = response.data;
+    if (data && data.id && event !== "message:pin" && event !== "message:unpin") {
+      setMessages((current) => mergeMessages(current, [data]));
+      lastIdRef.current = Math.max(lastIdRef.current, data.id);
+    } else {
+      loadMessages(lastIdRef.current || undefined);
+      loadPinned();
+    }
+    return data;
+  };
+
+  // Use the live socket when connected; otherwise fall back to the REST
+  // routes so chat keeps working even if real-time is unavailable.
+  const emitAction = (event, payload) => new Promise((resolve, reject) => {
     const socket = socketRef.current;
-    if (!socket?.connected) return reject(new Error("Real-time chat is reconnecting. Please try again."));
+    if (!socket?.connected) {
+      restFallback(event, payload).then(resolve).catch((err) => reject(new Error(err.response?.data?.message || err.message || "Operation failed.")));
+      return;
+    }
     socket.emit(event, payload, (result) => {
       if (!result?.ok) return reject(new Error(result?.message || "Operation failed."));
-      if (successMessage) setError("");
+      setError("");
       resolve(result.data);
     });
   });
@@ -127,7 +159,7 @@ export default function CircleChat({ circleId, myRole, onAccessRevoked }) {
   return (
     <div className="flex h-[560px] flex-col rounded-3xl border border-slate-200 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-        <div><p className="text-sm font-black text-slate-900">Circle Chat</p><p className={`text-[10px] font-bold ${connectionState === "connected" ? "text-emerald-600" : connectionState === "offline" ? "text-amber-600" : "text-slate-400"}`}>{connectionState === "connected" ? "Live" : connectionState === "offline" ? "Reconnecting..." : "Connecting..."}</p></div>
+        <div><p className="text-sm font-black text-slate-900">Circle Chat</p><p className={`text-[10px] font-bold ${connectionState === "connected" ? "text-emerald-600" : connectionState === "offline" || connectionState === "error" ? "text-amber-600" : "text-slate-400"}`}>{connectionState === "connected" ? "Live" : connectionState === "offline" ? "Reconnecting..." : connectionState === "error" ? "Live updates unavailable - retrying..." : "Connecting..."}</p></div>
         <button type="button" onClick={() => setShowPinned((v) => !v)} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50">Pinned {pinned.length ? `(${pinned.length})` : ""}</button>
       </div>
       {showPinned && <div className="border-b border-amber-100 bg-amber-50/60 p-3"><div className="space-y-2">{pinned.length ? pinned.map((p) => <button key={p.id} type="button" onClick={() => document.getElementById(`message-${p.messageId}`)?.scrollIntoView({ behavior: "smooth", block: "center" })} className="block w-full rounded-xl bg-white p-3 text-left"><p className="text-xs font-bold text-slate-800">{p.message.content}</p><p className="mt-1 text-[10px] text-slate-400">Pinned by {p.pinnedByUsername}</p></button>) : <p className="text-xs text-slate-500">No pinned messages.</p>}</div></div>}
@@ -147,7 +179,7 @@ export default function CircleChat({ circleId, myRole, onAccessRevoked }) {
         })}
         <div ref={bottomRef} />
       </div>
-      <form onSubmit={submit} className="flex items-center gap-2 border-t border-slate-100 p-3"><input type="text" value={content} onChange={(e) => setContent(e.target.value)} placeholder="Message the circle..." maxLength={2000} className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-accent-soft0 focus:bg-white" /><button type="submit" disabled={!content.trim() || connectionState !== "connected"} className="rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-accent-hover disabled:opacity-50">Send</button></form>
+      <form onSubmit={submit} className="flex items-center gap-2 border-t border-slate-100 p-3"><input type="text" value={content} onChange={(e) => setContent(e.target.value)} placeholder="Message the circle..." maxLength={2000} className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-accent-soft0 focus:bg-white" /><button type="submit" disabled={!content.trim()} className="rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white hover:bg-accent-hover disabled:opacity-50">Send</button></form>
     </div>
   );
 }
