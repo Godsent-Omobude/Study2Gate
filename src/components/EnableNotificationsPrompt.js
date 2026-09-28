@@ -3,15 +3,20 @@ import { Bell } from "lucide-react";
 import { requestPermissionAndRegister } from "../firebase/messaging";
 import { registerPushDevice } from "../api/pushNotifications";
 
-// Shown once, right after a brand-new user verifies their email and lands
-// in the app for the first time (see VerifyEmail.js) — and only when
-// running as the installed app (see utils/platform.js's isInstalledApp),
-// never in a regular browser tab. Gives context before the real OS
-// permission dialog, rather than firing that dialog with zero explanation
-// — both for a better opt-in rate and because some browsers quietly
-// downgrade permission prompts that appear with no user interaction/
-// context behind them.
-export default function EnableNotificationsPrompt({ open, onDone }) {
+// Shown once, right after a brand-new user verifies their email and is
+// signed in for the first time (see VerifyEmail.js). Used on every
+// platform — native Android app, regular browser, installed PWA and the
+// TWA — since requestPermissionAndRegister() already picks the right
+// mechanism for each. Gives context before the real OS/browser permission
+// dialog, rather than firing that dialog with zero explanation — both for
+// a better opt-in rate and because some browsers quietly downgrade
+// permission prompts that appear with no user interaction/context behind
+// them.
+//
+// - onSkip:     user tapped "Not now" (go straight to the app).
+// - onContinue: user went through the enable flow, whatever the outcome
+//               (VerifyEmail sends them on to Settings → Notifications).
+export default function EnableNotificationsPrompt({ open, onSkip, onContinue }) {
   const [phase, setPhase] = useState("ask"); // "ask" | "busy" | "result"
   const [resultMessage, setResultMessage] = useState("");
 
@@ -28,7 +33,7 @@ export default function EnableNotificationsPrompt({ open, onDone }) {
         setResultMessage("Notifications enabled — you're all set!");
       } else if (result.permission === "denied") {
         setResultMessage(
-          "Notifications are off. You can turn them on any time from Settings → Notifications."
+          "Notifications are off. You can change this any time in the settings you're about to open."
         );
       } else {
         setResultMessage("No problem — you can enable notifications any time from Settings.");
@@ -70,7 +75,7 @@ export default function EnableNotificationsPrompt({ open, onDone }) {
               </button>
               <button
                 type="button"
-                onClick={onDone}
+                onClick={onSkip}
                 disabled={phase === "busy"}
                 className="w-full rounded-xl py-2.5 text-sm font-bold text-slate-500 hover:text-slate-700 disabled:opacity-60"
               >
@@ -83,10 +88,10 @@ export default function EnableNotificationsPrompt({ open, onDone }) {
             <p className="mt-4 text-sm leading-6 text-slate-600">{resultMessage}</p>
             <button
               type="button"
-              onClick={onDone}
+              onClick={onContinue}
               className="mt-6 w-full rounded-xl bg-accent py-3 text-sm font-black text-white shadow-lg shadow-accent-soft hover:bg-accent-hover"
             >
-              Continue to Study2Gate
+              Go to notification settings
             </button>
           </>
         )}

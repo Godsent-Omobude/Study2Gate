@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import api from "../api/api";
-import { isInstalledApp } from "../utils/platform";
+import { getPermissionStateAsync } from "../firebase/messaging";
 import EnableNotificationsPrompt from "../components/EnableNotificationsPrompt";
 
 export default function VerifyEmail() {
@@ -38,11 +38,18 @@ export default function VerifyEmail() {
       const response = await api.post("/auth/verify-email", { email, code });
       applySession(response.data);
 
-      // App-only: this is the first moment a brand-new user is actually
-      // logged in, so it's the right point to ask about notifications —
-      // but only inside the installed app, never a regular browser tab.
-      if (isInstalledApp()) {
+      // This is the first moment a brand-new user is actually logged in,
+      // so it's the right point to ask about notifications — on every
+      // platform (native app, browser, PWA/TWA).
+      //   not-requested → show our explainer, then the real permission dialog
+      //   denied        → can't re-prompt; send them to the settings page,
+      //                   which explains how to unblock
+      //   granted / unsupported → nothing to ask; straight into the app
+      const permission = await getPermissionStateAsync();
+      if (permission === "not-requested") {
         setShowNotificationPrompt(true);
+      } else if (permission === "denied") {
+        navigate("/settings/notifications");
       } else {
         navigate("/");
       }
@@ -160,7 +167,8 @@ export default function VerifyEmail() {
 
       <EnableNotificationsPrompt
         open={showNotificationPrompt}
-        onDone={() => navigate("/")}
+        onSkip={() => navigate("/")}
+        onContinue={() => navigate("/settings/notifications")}
       />
     </div>
   );

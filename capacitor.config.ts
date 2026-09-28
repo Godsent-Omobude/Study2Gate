@@ -4,6 +4,7 @@ const config: CapacitorConfig = {
   appId: 'com.study2gate.app',
   appName: 'Study2Gate',
   webDir: 'build',
+  backgroundColor: '#ffffff',
   server: {
     url: 'https://study-2gate.vercel.app',
     cleartext: true
