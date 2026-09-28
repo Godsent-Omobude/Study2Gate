@@ -5,7 +5,7 @@ import api from "../api/api";
 import usePushMessaging from "../hooks/usePushMessaging";
 import useProfilePicture from "../hooks/useProfilePicture";
 import { unregisterPushDevice } from "../api/pushNotifications";
-import { revokeLocalToken } from "../firebase/messaging";
+import { revokeLocalToken, isNativePushAvailable } from "../firebase/messaging";
 import study2gateLogo from "../assets/study2gate-logo.png";
 const navItems = [
   { to: "/", label: "Dashboard", icon: "home", end: true },
@@ -58,11 +58,17 @@ export default function Sidebar({ open, onClose }) {
   const logout = () => {
     setLoggingOut(true);
 
-    // Only this device's push registration is removed — other
+    // Web: only this browser's push registration is removed — other
     // devices/browsers signed into the same account keep receiving
     // pushes, since logging out here says nothing about those sessions.
+    //
+    // Native app: the registration is deliberately kept, so streak
+    // warnings and Study Circle messages still reach the phone while
+    // signed out (like banking apps). If a different account signs in on
+    // this phone, registerDevice() reassigns the token to that account;
+    // "Turn off" in Settings still removes it completely.
     const fcmToken = localStorage.getItem("fcmToken");
-    const cleanupPush = fcmToken
+    const cleanupPush = fcmToken && !isNativePushAvailable()
       ? unregisterPushDevice(fcmToken).catch(() => {}).then(() => revokeLocalToken())
       : Promise.resolve();
 

@@ -4,6 +4,8 @@
 // Settings → Notifications (never on page load).
 import { getToken, onMessage, deleteToken } from "firebase/messaging";
 import { getMessagingIfSupported, isFirebaseConfigured, vapidKey } from "./config";
+import { Capacitor } from "@capacitor/core";
+import { PushNotifications } from "@capacitor/push-notifications";
 
 // sw.js is the app's single service worker — it handles both PWA offline
 // caching and Firebase Cloud Messaging background push (see
@@ -14,8 +16,97 @@ import { getMessagingIfSupported, isFirebaseConfigured, vapidKey } from "./confi
 // registration instead of creating a second one.
 const SERVICE_WORKER_URL = "/sw.js";
 
+// --- Native (Capacitor Android) push ------------------------------------
+//
+// Inside the native Android app the WebView can't do web push (no Push API
+// or service-worker push), so the app uses the official Capacitor Push
+// Notifications plugin instead: the Android Firebase SDK (configured by
+// android/app/google-services.json) hands back a native FCM token, which is
+// registered with the backend exactly like a web token. Notifications are
+// then delivered by Google Play Services, so they arrive even when the app
+// is closed or the user is signed out. Everything native is a no-op in a
+// regular browser, and in an older APK that predates the plugin
+// (isPluginAvailable guards that), so the web flow below is unchanged.
+//
+// Must match ANDROID_CHANNEL_ID in backend/services/pushNotificationService.js.
+export const NATIVE_CHANNEL_ID = "study2gate_alerts";
+
+export const isNativePushAvailable = () => {
+  try {
+    return Capacitor.isNativePlatform() && Capacitor.isPluginAvailable("PushNotifications");
+  } catch {
+    return false;
+  }
+};
+
+const mapNativePermission = (receive) => {
+  if (receive === "granted") return "granted";
+  if (receive === "denied") return "denied";
+  return "not-requested";
+};
+
+const describeNativeDevice = () =>
+  `Study2Gate app on ${Capacitor.getPlatform() === "ios" ? "iOS" : "Android"}`;
+
+// Android 8+ requires a notification channel; creating an existing channel
+// is a harmless no-op, so this is safe to call on every launch. High
+// importance = sound + heads-up banner, appropriate for streak warnings
+// and chat messages.
+let nativeChannelReady = false;
+const ensureNativeChannel = async () => {
+  if (nativeChannelReady) return;
+  try {
+    await PushNotifications.createChannel({
+      id: NATIVE_CHANNEL_ID,
+      name: "Study2Gate alerts",
+      description: "Streak reminders, Study Circle messages and other time-sensitive alerts",
+      importance: 4,
+      visibility: 1,
+      vibration: true,
+    });
+    nativeChannelReady = true;
+  } catch (error) {
+    console.warn("Unable to create notification channel:", error?.message);
+  }
+};
+
+// Asks the plugin to register with FCM and resolves with the device token
+// (or rejects on failure/timeout).
+const registerNativeAndGetToken = async () => {
+  let resolveToken;
+  let rejectToken;
+  const tokenPromise = new Promise((resolve, reject) => {
+    resolveToken = resolve;
+    rejectToken = reject;
+  });
+
+  const tokenListener = await PushNotifications.addListener("registration", (token) =>
+    resolveToken(token.value)
+  );
+  const errorListener = await PushNotifications.addListener("registrationError", (err) =>
+    rejectToken(new Error(err?.error || "Push registration failed."))
+  );
+  const timer = setTimeout(
+    () => rejectToken(new Error("Timed out waiting for the push registration token.")),
+    15000
+  );
+
+  try {
+    await PushNotifications.register();
+    return await tokenPromise;
+  } finally {
+    clearTimeout(timer);
+    tokenListener.remove();
+    errorListener.remove();
+  }
+};
+
 // One of: "unsupported" | "not-requested" | "granted" | "denied"
+//
+// Synchronous, so in the native app it can only return a placeholder — use
+// getPermissionStateAsync() where the real OS permission matters.
 export const getPermissionState = () => {
+  if (isNativePushAvailable()) return "not-requested";
   if (!isFirebaseConfigured()) return "unsupported";
   if (typeof window === "undefined" || !("Notification" in window) || !("serviceWorker" in navigator)) {
     return "unsupported";
@@ -23,6 +114,20 @@ export const getPermissionState = () => {
   if (Notification.permission === "granted") return "granted";
   if (Notification.permission === "denied") return "denied";
   return "not-requested";
+};
+
+// Same values as getPermissionState(), but reads the real OS permission
+// when running inside the native app.
+export const getPermissionStateAsync = async () => {
+  if (isNativePushAvailable()) {
+    try {
+      const status = await PushNotifications.checkPermissions();
+      return mapNativePermission(status.receive);
+    } catch {
+      return "unsupported";
+    }
+  }
+  return getPermissionState();
 };
 
 const registerServiceWorker = async () => {
@@ -60,6 +165,20 @@ const describeDevice = () => {
 // token. Does NOT talk to the Study2Gate backend — the caller is
 // responsible for sending the returned token to POST /notifications/register.
 export const requestPermissionAndRegister = async () => {
+  if (isNativePushAvailable()) {
+    let status = await PushNotifications.checkPermissions();
+    if (status.receive !== "granted") {
+      // Android 13+ shows the system permission dialog here.
+      status = await PushNotifications.requestPermissions();
+    }
+    const permission = mapNativePermission(status.receive);
+    if (permission !== "granted") return { permission, token: null };
+
+    await ensureNativeChannel();
+    const token = await registerNativeAndGetToken();
+    return { permission, token, deviceInfo: describeNativeDevice() };
+  }
+
   if (!isFirebaseConfigured()) {
     throw new Error("Notifications are not configured for this deployment.");
   }
@@ -93,6 +212,19 @@ export const requestPermissionAndRegister = async () => {
 // again. Resolves to null if permission isn't already granted, silently
 // (this is a background refresh, not a user-initiated action).
 export const refreshTokenIfPermitted = async () => {
+  if (isNativePushAvailable()) {
+    try {
+      const status = await PushNotifications.checkPermissions();
+      if (status.receive !== "granted") return null;
+      await ensureNativeChannel();
+      const token = await registerNativeAndGetToken();
+      return token ? { token, deviceInfo: describeNativeDevice() } : null;
+    } catch (error) {
+      console.warn("Native push token refresh failed:", error.message);
+      return null;
+    }
+  }
+
   if (getPermissionState() !== "granted") return null;
   try {
     const messaging = await getMessagingIfSupported();
@@ -111,6 +243,10 @@ export const refreshTokenIfPermitted = async () => {
 // via DELETE /notifications/unregister.
 export const revokeLocalToken = async () => {
   try {
+    if (isNativePushAvailable()) {
+      await PushNotifications.unregister();
+      return;
+    }
     const messaging = await getMessagingIfSupported();
     if (messaging) await deleteToken(messaging);
   } catch {
@@ -127,7 +263,29 @@ export const revokeLocalToken = async () => {
 // raw FCM payload for callers that want to react to it further (e.g. a
 // lightweight in-app toast).
 export const listenForForegroundMessages = async (callback) => {
+  if (isNativePushAvailable()) {
+    const handle = await PushNotifications.addListener("pushNotificationReceived", callback);
+    return () => {
+      handle.remove();
+    };
+  }
+
   const messaging = await getMessagingIfSupported();
   if (!messaging) return () => {};
   return onMessage(messaging, callback);
+};
+
+// Native app only: fires when the user taps a notification (including when
+// that tap is what launched the app). `onTap` receives the in-app path the
+// backend attached to the notification (e.g. "/circles/12"). On the web the
+// service worker's notificationclick handler does this job instead.
+export const listenForNotificationTaps = async (onTap) => {
+  if (!isNativePushAvailable()) return () => {};
+  const handle = await PushNotifications.addListener("pushNotificationActionPerformed", (action) => {
+    const url = action?.notification?.data?.url;
+    if (typeof url === "string" && url.startsWith("/")) onTap(url);
+  });
+  return () => {
+    handle.remove();
+  };
 };

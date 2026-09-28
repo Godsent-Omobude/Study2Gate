@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { refreshTokenIfPermitted, listenForForegroundMessages } from "../firebase/messaging";
+import {
+  refreshTokenIfPermitted,
+  listenForForegroundMessages,
+  listenForNotificationTaps,
+} from "../firebase/messaging";
 import { registerPushDevice } from "../api/pushNotifications";
 
 // Mounted once per authenticated session (see Sidebar.js, which is present
@@ -37,6 +41,23 @@ export default function usePushMessaging() {
 
     navigator.serviceWorker.addEventListener("message", onMessage);
     return () => navigator.serviceWorker.removeEventListener("message", onMessage);
+  }, [navigate]);
+
+  // Native app: tapping a notification (while the app is backgrounded or
+  // was closed) opens the page the backend attached to it.
+  useEffect(() => {
+    let unsubscribe = () => {};
+    let cancelled = false;
+
+    listenForNotificationTaps((url) => navigate(url)).then((unsub) => {
+      if (cancelled) unsub();
+      else unsubscribe = unsub;
+    });
+
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
   }, [navigate]);
 
   useEffect(() => {

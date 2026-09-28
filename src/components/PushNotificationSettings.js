@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import {
   getPermissionState,
+  getPermissionStateAsync,
+  isNativePushAvailable,
   requestPermissionAndRegister,
   revokeLocalToken,
 } from "../firebase/messaging";
@@ -17,7 +19,7 @@ const CATEGORIES = {
   notifyCircleInvitations: { label: "Invitations", description: "When someone invites you to join a Study Circle." },
   notifyMentions: { label: "Mentions", description: "When someone mentions you directly." },
   notifyCircleActivity: { label: "Activity", description: "Join requests, approvals, new sessions and membership changes." },
-  notifyFlashcardActivity: { label: "Flashcard activity", description: "Updates about your flashcard sets." },
+  notifyFlashcardActivity: { label: "Flashcard activity", description: "Updates about your flashcard sets, plus streak reminders." },
   notifyAccountSecurity: { label: "Account and security", description: "Important alerts about your account." },
   notifyAnnouncements: { label: "Announcements", description: "Occasional platform news and updates." },
 };
@@ -68,6 +70,7 @@ export default function PushNotificationSettings() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const native = isNativePushAvailable();
 
   const refreshStatus = async () => {
     try {
@@ -85,6 +88,18 @@ export default function PushNotificationSettings() {
       .catch(() => setError("Unable to load notification preferences."));
   }, []);
 
+  // In the native app the real permission state only comes from the OS
+  // asynchronously, so refine the synchronous placeholder once it arrives.
+  useEffect(() => {
+    let cancelled = false;
+    getPermissionStateAsync().then((state) => {
+      if (!cancelled) setPermission(state);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const enabledOnThisDevice = permission === "granted" && Boolean(localStorage.getItem("fcmToken")) && activeDeviceCount > 0;
 
   const handleEnable = async () => {
@@ -97,7 +112,11 @@ export default function PushNotificationSettings() {
 
       if (result.permission !== "granted") {
         if (result.permission === "denied") {
-          setError("Notifications are blocked. Enable them in your browser's site settings to turn this on.");
+          setError(
+            native
+              ? "Notifications are blocked. Turn them on in Android Settings → Apps → Study2Gate → Notifications."
+              : "Notifications are blocked. Enable them in your browser's site settings to turn this on."
+          );
         }
         return;
       }
@@ -146,7 +165,11 @@ export default function PushNotificationSettings() {
     }
   };
 
-  const statusCopy = STATUS_COPY[permission] || STATUS_COPY["not-requested"];
+  const baseStatusCopy = STATUS_COPY[permission] || STATUS_COPY["not-requested"];
+  const statusCopy =
+    native && permission === "denied"
+      ? { ...baseStatusCopy, label: "Blocked in Android settings" }
+      : baseStatusCopy;
 
   return (
     <section className="mb-5 rounded-3xl bg-white p-6 shadow-sm">
@@ -169,17 +192,22 @@ export default function PushNotificationSettings() {
 
         {permission === "denied" && (
           <p className="text-sm text-slate-600">
-            You've blocked notifications for Study2Gate. To turn them back on, allow notifications for this
-            site in your browser's settings, then reload this page.
+            {native
+              ? "You've blocked notifications for Study2Gate. To turn them back on, open Android Settings → Apps → Study2Gate → Notifications and allow them."
+              : "You've blocked notifications for Study2Gate. To turn them back on, allow notifications for this site in your browser's settings, then reload this page."}
           </p>
         )}
 
         {(permission === "not-requested" || permission === "granted") && (
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="font-bold text-slate-800">Browser notifications</p>
+              <p className="font-bold text-slate-800">
+                {native ? "App notifications" : "Browser notifications"}
+              </p>
               <p className="mt-1 text-xs text-slate-500">
-                Get notified on this device even when Study2Gate isn't open in your browser.
+                {native
+                  ? "Get streak reminders and Study Circle messages on this phone, even when the app is closed or you're signed out."
+                  : "Get notified on this device even when Study2Gate isn't open in your browser."}
               </p>
             </div>
             {enabledOnThisDevice ? (
@@ -208,7 +236,7 @@ export default function PushNotificationSettings() {
           <p className="text-sm font-bold text-slate-700">Notify me about</p>
           {!enabledOnThisDevice && (
             <p className="mt-1 text-xs text-slate-400">
-              Enable browser notifications above to turn these on.
+              Enable {native ? "app" : "browser"} notifications above to turn these on.
             </p>
           )}
 
@@ -240,7 +268,7 @@ export default function PushNotificationSettings() {
           ))}
 
           <p className="pt-3 text-xs text-slate-400">
-            These control which notifications can be sent as browser push. Turning a category off doesn't
+            These control which notifications can be sent as {native ? "app" : "browser"} push. Turning a category off doesn't
             affect your in-app notification bell.
           </p>
         </div>

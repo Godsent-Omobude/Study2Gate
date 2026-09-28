@@ -45,6 +45,7 @@ import AcceptCopyrightPolicy from "./pages/AcceptCopyrightPolicy";
 import { applyDynamicManifest } from "./pwa/dynamicManifest";
 import { resolveTheme } from "./utils/theme";
 import SessionGuard from "./components/SessionGuard";
+import AppUpdatePrompt from "./components/AppUpdatePrompt";
 
 function ProtectedLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -151,6 +152,7 @@ export default function App() {
       <Analytics />
       <AppearanceManager />
       <SessionGuard />
+      <AppUpdatePrompt />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
