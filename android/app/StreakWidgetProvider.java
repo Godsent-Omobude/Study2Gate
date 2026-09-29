@@ -20,7 +20,7 @@ public class StreakWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_streak);
 
         // V1: static placeholder text. V2 will fill these from stored data.
-        views.setTextViewText(R.id.widget_streak_text, "0-day streak");
+        views.setTextViewText(R.id.widget_streak_text, "0");
         views.setTextViewText(R.id.widget_reminder_text, "Study today to keep your streak.");
 
         Intent openAppIntent = new Intent(context, MainActivity.class);
@@ -33,9 +33,8 @@ public class StreakWidgetProvider extends AppWidgetProvider {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        views.setOnClickPendingIntent(R.id.widget_open_button, pendingIntent);
-        // Also let tapping the whole widget body open the app.
-        views.setOnClickPendingIntent(R.id.widget_streak_text, pendingIntent);
+        // Whole card is tappable now — no separate button.
+        views.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
