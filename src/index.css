@@ -384,8 +384,3 @@ body {
 .flashcard-sets-scroll::-webkit-scrollbar {
   display: none;
 }
-
-.flashcard-sets-scroll > * {
-  box-sizing: border-box;
-  min-width: max-content;
-}

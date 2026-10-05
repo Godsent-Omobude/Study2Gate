@@ -194,14 +194,16 @@ export default function MyFlashcards() {
                 </Link>
               </section>
             ) : (
-              <div className="grid gap-4 md:grid-cols-2">
-                {sets.map((set) => (
-                  <FlashcardSetCard
-                    key={set.id}
-                    set={set}
-                    onDelete={deleteSet}
-                  />
-                ))}
+              <div className="flashcard-sets-scroll -mx-1 px-1 pb-2">
+                <div className="grid w-max min-w-full gap-4 md:grid-cols-2">
+                  {sets.map((set) => (
+                    <FlashcardSetCard
+                      key={set.id}
+                      set={set}
+                      onDelete={deleteSet}
+                    />
+                  ))}
+                </div>
               </div>
             )}
           </>
