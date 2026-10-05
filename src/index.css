@@ -369,3 +369,23 @@ body {
     display: none;
   }
 }
+
+/* Flashcard set list: same horizontal-scroll behaviour as the materials strip.
+   html/body stay overflow-x:hidden, so this wrapper must own the sideways scroll. */
+.flashcard-sets-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y;
+  scrollbar-width: none;
+}
+
+.flashcard-sets-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.flashcard-sets-scroll > * {
+  box-sizing: border-box;
+  min-width: max-content;
+}
