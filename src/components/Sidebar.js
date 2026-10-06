@@ -7,6 +7,7 @@ import usePushMessaging from "../hooks/usePushMessaging";
 import useProfilePicture from "../hooks/useProfilePicture";
 import { unregisterPushDevice } from "../api/pushNotifications";
 import { revokeLocalToken, isNativePushAvailable } from "../firebase/messaging";
+import { clearWidgetToken } from "../native/widgetToken";
 import study2gateLogo from "../assets/study2gate-logo.png";
 const navItems = [
   { to: "/", label: "Dashboard", icon: "home", end: true },
@@ -76,7 +77,7 @@ export default function Sidebar({ open, onClose }) {
     // The auth cookie is httpOnly, so client-side JS can't clear it —
     // without this call the cookie would keep authenticating requests
     // even after localStorage.clear().
-    Promise.allSettled([api.post("/auth/logout"), cleanupPush]).finally(() => {
+    Promise.allSettled([api.post("/auth/logout"), cleanupPush, clearWidgetToken()]).finally(() => {
       // The Socket.IO connection is authenticated independently from React
       // state. Close it before leaving the authenticated area so the old
       // session cannot continue receiving real-time events after logout.

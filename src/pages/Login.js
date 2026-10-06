@@ -7,6 +7,7 @@ import { safeInternalPath } from "../utils/safeRedirect";
 import { friendlyErrorMessage } from "../utils/errorMessage";
 import EqualizerLoader from "../components/EqualizerLoader";
 import BackendStatusBanner from "../components/BackendStatusBanner";
+import { saveWidgetToken } from "../native/widgetToken";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -48,6 +49,10 @@ export default function Login() {
       localStorage.setItem("profilePicture", response.data.profilePicture || "");
       localStorage.setItem("theme", response.data.theme || "system");
       localStorage.setItem("accentColor", response.data.accentColor || "blue");
+
+      // No-ops on web; on native, hands the widget its long-lived token.
+      // Fire-and-forget — never delay navigation over this.
+      saveWidgetToken();
 
       navigate(redirectTo);
     } catch (err) {
